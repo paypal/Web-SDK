@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Nav } from "./components/Nav";
 import { Home } from "./pages/Home";
+import { FrameComponentDemo } from "./pages/Frame-Component-Demo";
 import { NotFound } from "./pages/NotFound";
 
 import "./App.css";
@@ -18,6 +19,10 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route
+              path="/frame-component-demo"
+              element={<FrameComponentDemo />}
+            />
             <Route path="/other-page" element={<OtherPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -8,6 +8,9 @@ export function Nav() {
           <Link to="/">Home</Link>
         </li>
         <li>
+          <Link to="/frame-component-demo">Frame Component Demo</Link>
+        </li>
+        <li>
           <Link to="/other-page">Other Page</Link>
         </li>
       </ul>
