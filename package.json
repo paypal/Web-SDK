@@ -13,6 +13,12 @@
     "type": "git",
     "url": "git+ssh://git@github.com/paypal/Web-SDK.git"
   },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "demo": "npm run dev --workspace=demo",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
   "keywords": [
     "paypal",
     "braintree",
