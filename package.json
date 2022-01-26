@@ -1,16 +1,14 @@
 {
-  "name": "@paypal/web-sdk",
+  "name": "@paypal/web-sdk-mono-repo",
   "version": "0.0.1",
+  "private": true,
   "description": "[WIP] One merchant integration point for all of PayPal's services",
   "main": "index.js",
-  "scripts": {
-    "prettier": "prettier --write .",
-    "prettier:check": "prettier --check .",
-    "prebuild": "npm run prettier",
-    "build": "tsc --declaration",
-    "lint": "eslint .",
-    "test": "jest"
-  },
+  "workspaces": [
+    "demo",
+    "frame-component",
+    "sdk"
+  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/paypal/Web-SDK.git"
@@ -25,16 +23,5 @@
   "bugs": {
     "url": "https://github.com/paypal/Web-SDK/issues"
   },
-  "homepage": "https://github.com/paypal/Web-SDK#readme",
-  "devDependencies": {
-    "@types/jest": "^27.4.0",
-    "@typescript-eslint/eslint-plugin": "^5.10.1",
-    "@typescript-eslint/parser": "^5.10.1",
-    "eslint": "^8.7.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.4.7",
-    "prettier": "^2.5.1",
-    "typescript": "^4.5.5"
-  }
+  "homepage": "https://github.com/paypal/Web-SDK#readme"
 }
