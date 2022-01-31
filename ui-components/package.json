@@ -2,7 +2,7 @@
   "name": "@paypal/ui-components",
   "version": "1.0.0",
   "description": "[WIP] Main UI components for the PayPal Unified SDK",
-  "main": "dist/esm/index.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
     "prettier": "prettier --write .",

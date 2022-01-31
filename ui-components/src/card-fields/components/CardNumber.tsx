@@ -1,3 +1,4 @@
+import { FunctionalComponent, h } from "preact";
 import { useState, useEffect } from "preact/hooks";
 
 import {
@@ -12,7 +13,13 @@ import {
   navigateOnKeyDown,
   maskValidCard,
 } from "../utils";
-import type { CardNavigation, InputState, InputEvent } from "../types";
+import type {
+  CardNavigation,
+  InputState,
+  InputEvent,
+  CardNumberChangeEvent,
+  FieldValidity,
+} from "../types";
 import { DEFAULT_CARD_TYPE } from "../constants";
 
 // Helper method to check if navigation to next field should be allowed
@@ -45,13 +52,13 @@ type CardNumberProps = {
   maxLength?: number;
   navigation?: CardNavigation;
   allowNavigation?: boolean;
-  onChange?: any;
-  onFocus?: any;
-  onBlur?: any;
-  onValidityChange?: any;
+  onChange?: (event: CardNumberChangeEvent) => void;
+  onFocus?: (event: InputEvent) => void;
+  onBlur?: (event: InputEvent) => void;
+  onValidityChange?: (validity: FieldValidity) => void;
 };
 
-export function CardNumber({
+export const CardNumber: FunctionalComponent<CardNumberProps> = ({
   name = "number",
   autocomplete = "cc-number",
   navigation = defaultNavigation,
@@ -67,7 +74,7 @@ export function CardNumber({
   onFocus,
   onBlur,
   onValidityChange,
-}: CardNumberProps) {
+}) => {
   const [cardType, setCardType] = useState(DEFAULT_CARD_TYPE);
   const [inputState, setInputState] = useState({
     ...defaultInputState,
@@ -141,12 +148,14 @@ export function CardNumber({
       keyStrokeCount: keyStrokeCount + 1,
     });
 
-    onChange({
-      event,
-      cardNumber: value,
-      cardMaskedNumber: maskedValue,
-      cardType: detectedCardType,
-    });
+    if (typeof onChange === "function") {
+      onChange({
+        event,
+        cardNumber: value,
+        cardMaskedNumber: maskedValue,
+        cardType: detectedCardType,
+      });
+    }
   };
 
   const onFocusEvent: any = (event: InputEvent) => {
@@ -215,4 +224,4 @@ export function CardNumber({
       onPaste={onPasteEvent}
     />
   );
-}
+};

@@ -1,44 +1,33 @@
-import resolve from "@rollup/plugin-node-resolve";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import { terser } from "rollup-plugin-terser";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import alias from "@rollup/plugin-alias";
-
-const packageJson = require("./package.json");
 
 export default [
   {
     input: "src/index.ts",
     output: [
       {
-        file: packageJson.main,
+        file: "dist/cjs/index.js",
         format: "cjs",
         sourcemap: true,
       },
       {
-        file: packageJson.module,
+        file: "dist/esm/index.js",
         format: "esm",
         sourcemap: true,
       },
     ],
+    external: ["preact", "card-validator"],
     plugins: [
       peerDepsExternal(),
-      resolve(),
+      nodeResolve(),
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
       terser(),
-      alias({
-        entries: [
-          { find: "react", replacement: "preact/compat" },
-          { find: "react-dom/test-utils", replacement: "preact/test-utils" },
-          { find: "react-dom", replacement: "preact/compat" },
-          { find: "react/jsx-runtime", replacement: "preact/jsx-runtime" },
-        ],
-      }),
     ],
-    external: ["react", "react-dom", "styled-components"],
   },
   {
     input: "dist/esm/types/index.d.ts",
