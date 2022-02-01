@@ -5,14 +5,11 @@ A module for creating a wrapper around iframes/popups for communicating with the
 Define a component to be put on both the parent and child pages:
 
 ```js
-const MyIframeBasedComponent = frameComponent.create({
-    url: 'http://www.my-site.com/my-login-component',
-    properties: {
-        foo: {
-            kind: "string",
-            required: false
-        }
-    },
+// step 1, define the component
+import { create } from "frame-component";
+
+const MyIframeBasedComponent = create({
+    properties: ["backgroundColor"],
     hooks: ["onFoo"],
     methods: {
         bar() {
@@ -21,35 +18,29 @@ const MyIframeBasedComponent = frameComponent.create({
     }
 });
 
-export MyIframeBasedComponent;
+export const MyIframeParent = MyIframeBasedComponent.parent;
+export const MyIframeChild = MyIframeBasedComponent.child;
 ```
 
-Render the component on the parent page:
-
+Next, we need to 
 ```js
-import { MyIframeBasedComponent } from "./path/to/component";
-
-const component = await MyIframeBasedComponent({
+// step 2, render the component on the parent page
+const component = new MyIframeParent({
+  url: 'https://www.example.com/location-of-child-component',
   properties: {
-    foo: "bar",
+    backgroundColor: "red"
   },
-  hooks: {
-    onFoo: function (data) {
-      console.log("found some data", data);
-    },
+  onFoo() {
+    // when onFoo is called on the parent, do this
+  }
+});
+
+await component.render(refToADomNodeWhereTheComponentWillBeInserted);
+
+// step 3, create child component in iframe
+const childComponent = new MyIframeChild({
+  onCreate({properties}) {
+    // set background color of component to red
   },
-}).render(document.getElementById("#container"));
-
-component.bar(); // will trigger the bar function to run in the child frame
-```
-
-Implement the component in the iframe:
-
-```js
-import { MyIframeBasedComponent } from "./path/to/component";
-
-MyIframeBasedComponent.props.foo; // "bar"
-
-// triggers the onFoo hook on the parent page with the arg { foo: "bar" }
-MyIframeBasedComponent.hooks.onFoo({ foo: "bar" });
+})
 ```
