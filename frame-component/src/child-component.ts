@@ -1,38 +1,40 @@
-// import type { ParentProps } from "./parent-component";
-// import { on as onFramebus, FramebusConfig, initialize } from "framebus";
+import type { ParentProps } from "./parent-component";
+import { emit, FramebusConfig, initialize } from "framebus";
 
 type ChildProps = {
-  // onCreate?: (props?: {
-  //   methods: ParentProps["methods"];
-  //   properties: ParentProps["properties"];
-  // }) => void;
-  // origin: string;
+  onCreate?: (props?: {
+    // methods: ParentProps["methods"];
+    properties: ParentProps["properties"];
+  }) => void;
 };
 
 export class ChildComponent {
-  // private properties: ChildProps;
-  // private parentProps: ParentProps = {};
-  // private busConfig: FramebusConfig;
+  private properties: ChildProps;
+  private parentProps: ParentProps = {};
+  private busConfig: FramebusConfig;
 
   constructor(props: ChildProps = {}) {
-    // this.properties = props;
-    // this.on();
-    // this.busConfig = initialize({ origin: this.properties.origin });
+    this.properties = props;
+    this.on();
+    this.busConfig = initialize({
+      channel: window.location.hash.slice(1, location.hash.length),
+    });
   }
 
-  // on() {
-  //   onFramebus(this.busConfig, "on-handshake", (props) => {
-  //     this.parentProps = props;
-  //     this.onCreate();
-  //   });
-  // }
+  on() {
+    emit(this.busConfig, "child-ready", {}, (props) => {
+      this.parentProps = props as ParentProps;
+      this.onCreate();
+    });
+  }
 
-  // onCreate() {
-  //   if (typeof this.properties?.onCreate === "function") {
-  //     this.properties.onCreate({
-  //       methods: this.parentProps.methods,
-  //       properties: this.parentProps.properties,
-  //     });
-  //   }
-  // }
+  onCreate() {
+    console.log("I got called");
+    if (typeof this.properties?.onCreate === "function") {
+      this.properties.onCreate({
+        // methods: this.parentProps.methods,
+        properties: this.parentProps.properties,
+      });
+    }
+  }
 }

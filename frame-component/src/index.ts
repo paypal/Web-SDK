@@ -1,5 +1,6 @@
 import { ChildComponent } from "./child-component";
 import { ParentComponent } from "./parent-component";
+import { uniqueID } from "./utils";
 
 export type CreateOptions = {
   url: string;
