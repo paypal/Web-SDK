@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "dev": "vite",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
     "prebuild": "npm run prettier",
@@ -37,7 +38,8 @@
     "jest": "^27.4.7",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.3",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "vite": "^2.7.13"
   },
   "dependencies": {
     "framebus": "^6.0.0-rc.1"
