@@ -9,7 +9,5 @@ app.innerHTML = `
 
 const main = document.querySelector<HTMLElement>("#main")!;
 
-const parent = new Parent({
-    url: "http://localhost:3000/child.html"
-});
+const parent = new Parent();
 parent.render(main);
