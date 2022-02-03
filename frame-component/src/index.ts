@@ -6,8 +6,14 @@ export type CreateOptions = {
 };
 
 export function create(options: CreateOptions) {
+  class MyCustomParent extends ParentComponent {
+    // custom stuff based on what is passed 
+  }
+  class MyCustomChild extends ChildComponent {
+    // custom stuff based on what is passed 
+  }
   return {
-    Parent: ParentComponent,
-    Child: ChildComponent,
+    Parent: MyCustomParent,
+    Child: MyCustomChild,
   };
 }
