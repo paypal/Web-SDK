@@ -5,21 +5,29 @@ import { ParentComponent } from "../parent-component";
 describe("FrameComponent", () => {
   describe("create", () => {
     it("returns a parent component", () => {
-      const component = create({
+      const { Parent } = create({
         url: "https://example.com/iframe",
       });
 
-      const parent = new component.Parent();
+      const parent = new Parent();
 
       expect(parent).toBeInstanceOf(ParentComponent);
     });
 
-    it("returns a child component", () => {
-      const component = create({
+    it("saves url as the static property on the parent", () => {
+      const { Parent } = create({
         url: "https://example.com/iframe",
       });
 
-      const child = new component.Child();
+      expect(Parent.url).toBe("https://example.com/iframe");
+    });
+
+    it("returns a child component", () => {
+      const { Child } = create({
+        url: "https://example.com/iframe",
+      });
+
+      const child = new Child();
 
       expect(child).toBeInstanceOf(ChildComponent);
     });

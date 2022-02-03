@@ -6,14 +6,16 @@ export type CreateOptions = {
 };
 
 export function create(options: CreateOptions) {
-  class MyCustomParent extends ParentComponent {
-    // custom stuff based on what is passed 
+  class CustomParent extends ParentComponent {
+    static url = options.url;
   }
-  class MyCustomChild extends ChildComponent {
-    // custom stuff based on what is passed 
+
+  class CustomChild extends ChildComponent {
+    // custom stuff based on what is passed
   }
+
   return {
-    Parent: MyCustomParent,
-    Child: MyCustomChild,
+    Parent: CustomParent,
+    Child: CustomChild,
   };
 }
