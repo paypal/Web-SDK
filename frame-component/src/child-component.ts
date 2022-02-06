@@ -1,7 +1,7 @@
 import type { ParentProps } from "./parent-component";
 import { emit, FramebusConfig, initialize } from "framebus";
 
-type ChildProps = {
+export type ChildProps = {
   onCreate?: (props?: {
     // methods: ParentProps["methods"];
     properties: ParentProps["properties"];
@@ -15,10 +15,10 @@ export class ChildComponent {
 
   constructor(props: ChildProps = {}) {
     this.properties = props;
-    this.on();
     this.busConfig = initialize({
-      channel: window.location.hash.slice(1, location.hash.length),
+      channel: window.location.hash.slice(1, window.location.hash.length),
     });
+    this.on();
   }
 
   on() {

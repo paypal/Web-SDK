@@ -1,4 +1,8 @@
-import { Parent } from "./sample-component";
+import { parent } from "../../src";
+
+export const parentComponent = parent({
+  url: "http://localhost:3000/child.html",
+});
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -9,5 +13,4 @@ app.innerHTML = `
 
 const main = document.querySelector<HTMLElement>("#main")!;
 
-const parent = new Parent();
-parent.render(main);
+parentComponent.render(main);

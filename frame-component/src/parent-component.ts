@@ -8,18 +8,17 @@ export type ParentProps = FramebusOptions & {
   };
 };
 
-export abstract class ParentComponent {
-  static url: string;
+export class ParentComponent {
+  url: string;
   private iframe: HTMLIFrameElement;
-  private staticProperties: typeof ParentComponent;
   private busConfig: FramebusConfig;
 
   constructor(props: ParentProps = {}) {
-    this.staticProperties = this.constructor as typeof ParentComponent;
+    this.url = props.url as string;
 
     // TODO unique identifier for channel property as well
     this.busConfig = initialize({
-      // origin: props.url || this.staticProperties.url,
+      origin: this.url,
       channel: props.channel,
     });
     // TODO will need to pass the channel bit as well
@@ -34,7 +33,7 @@ export abstract class ParentComponent {
   }
 
   async render(container: HTMLElement): Promise<this> {
-    this.iframe.src = this.staticProperties.url + `#${this.busConfig.channel}`;
+    this.iframe.src = `${this.url}${this.busConfig.channel ? '#' + this.busConfig.channel : ''}`;
 
     container.appendChild(this.iframe);
     return Promise.resolve(this);

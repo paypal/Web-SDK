@@ -1,22 +1,12 @@
-import { ChildComponent } from "./child-component";
-import { ParentComponent } from "./parent-component";
+import { ChildComponent, ChildProps } from "./child-component";
+import { ParentComponent, ParentProps } from "./parent-component";
 import { uniqueID } from "./utils";
 
-export type CreateOptions = {
-  url: string;
-};
-
-export function create(options: CreateOptions) {
-  class CustomParent extends ParentComponent {
-    static url = options.url;
-  }
-
-  class CustomChild extends ChildComponent {
-    // custom stuff based on what is passed
-  }
-
-  return {
-    Parent: CustomParent,
-    Child: CustomChild,
-  };
+export function parent(options: ParentProps): ParentComponent {
+  return new ParentComponent(options);
 }
+
+export function child(options: ChildProps): ChildComponent {
+  return new ChildComponent(options);
+}
+

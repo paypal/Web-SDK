@@ -1,5 +1,7 @@
-import { create as createComponent } from "../../src/";
+import { parent, child } from "../../src";
 
-export const { Parent, Child } = createComponent({
+export const parentComponent = parent({
   url: "http://localhost:3000/child.html",
 });
+
+export const childComponent = child();
