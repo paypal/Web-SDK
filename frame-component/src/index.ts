@@ -1,12 +1,15 @@
 import { ChildComponent, ChildProps } from "./child-component";
 import { ParentComponent, ParentProps } from "./parent-component";
-import { uniqueID } from "./utils";
+import uuid from "@braintree/uuid";
 
-export function parent(options: ParentProps): ParentComponent {
+export function createParent(options: ParentProps): ParentComponent {
+
+  options.channel = options.channel || uuid();
+
   return new ParentComponent(options);
 }
 
-export function child(options: ChildProps): ChildComponent {
+export function createChild(options: ChildProps): ChildComponent {
   return new ChildComponent(options);
 }
 

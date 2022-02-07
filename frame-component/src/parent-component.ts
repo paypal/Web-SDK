@@ -1,5 +1,4 @@
 import { initialize, FramebusConfig, FramebusOptions, on } from "framebus";
-import { uniqueID } from "./utils";
 
 export type ParentProps = FramebusOptions & {
   url?: string;

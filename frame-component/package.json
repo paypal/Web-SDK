@@ -42,6 +42,7 @@
     "vite": "^2.7.13"
   },
   "dependencies": {
+    "@braintree/uuid": "^0.1.0",
     "framebus": "^6.0.0-rc.2"
   }
 }
