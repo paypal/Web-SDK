@@ -5,47 +5,56 @@ A module for creating a wrapper around iframes/popups for communicating with the
 Define a component to be put on both the parent and child pages:
 
 ```js
-// step 1, define the component
-import { create } from "frame-component";
+// create parent component
+import { createParent } from "frame-component";
 
-const MyIframeBasedComponent = create({
-  properties: ["backgroundColor"],
-  hooks: ["onFoo"],
-  methods: {
-    bar() {
-      console.log("this will log in the child frame.");
-    },
-  },
-});
-
-export const MyIframeParent = MyIframeBasedComponent.parent;
-export const MyIframeChild = MyIframeBasedComponent.child;
-```
-
-Next, we need to
-
-```js
-// step 2, render the component on the parent page
-const component = new MyIframeParent({
+const parentComponent = createParent({
   url: "https://www.example.com/location-of-child-component",
   properties: {
     backgroundColor: "red",
   },
-
-  onFoo() {
-    // when onFoo is called on the parent, do this on the child
-  },
+  methods: ["bar"],
+  hooks: {
+    onFoo(arg1, arg2, arg3) {
+      console.log("onFoo was called on the child frame with args:", arg1, arg2, arg3, "and I am logging this on the parent page")
+    },
+  }
 });
 
-await component.render(refToADomNodeWhereTheComponentWillBeInserted);
+await parentComponent.render(refToADomNodeWhereTheComponentWillBeInserted);
 
-// step 3, create child component in iframe
-const childComponent = new MyIframeChild({
-  onCreate({ methods }) {
-    // set background color of component to red
+// create child component
+import { createChild } from "frame-component";
 
-    // methods.bar();
-    methods.onFoo();
+const childComponent = createChild({
+  onCreate({ properties }) {
+    // run any code that must be run after the component has finished setting up
+    // such as applying any properties that the parent has configured
+    document.querySelector('#background-element').style.backgroundColor = properties.backgroundColor;
   },
+  hooks: ["onFoo"],
+  methods: {
+    bar(arg1, arg2, arg3) {
+      console.log("bar was called on the parent frame with args:", arg1, arg2, arg3, "so I am logging this on the child");
+    }
+  }
 });
+```
+
+The parent component can call any of the methods defined in the methods array with any number of arguments:
+
+```js
+parentComponent.bar('first', 'second', 'third');
+
+// in the child iframe, we will see this logged to the console:
+"bar was called on the parent frame with args: first second third so I am logging this on the child"
+```
+
+The child component can call any of the hooks defined.
+
+```js
+childComponent.onFoo("first", "second", "third");
+
+// in the parent page, we will see this logged to the console
+"onFoo was called on the child frame with args: first second third and I am logging this on the parent page"
 ```
