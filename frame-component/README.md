@@ -5,7 +5,7 @@ A module for creating a wrapper around iframes/popups for communicating with the
 Define a component to be put on both the parent and child pages:
 
 ```js
-const MyIframeBasedComponent = zoid.create({
+const MyIframeBasedComponent = frameComponent.create({
     url: 'http://www.my-site.com/my-login-component',
     properties: {
         foo: {
