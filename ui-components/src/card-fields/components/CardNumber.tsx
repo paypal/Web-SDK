@@ -16,10 +16,10 @@ import {
 import type {
   CardNavigation,
   InputState,
-  InputEvent,
   CardNumberChangeEvent,
   FieldValidity,
 } from "../types";
+import type { JSXInternal } from "preact/src/jsx";
 import { DEFAULT_CARD_TYPE } from "../constants";
 
 // Helper method to check if navigation to next field should be allowed
@@ -45,7 +45,7 @@ type CardNumberProps = {
   type?: string;
   className?: string;
   placeholder?: string;
-  style?: any;
+  style?: JSXInternal.CSSProperties;
   state?: InputState;
   ref?: () => void;
   autocomplete?: string;
@@ -53,8 +53,8 @@ type CardNumberProps = {
   navigation?: CardNavigation;
   allowNavigation?: boolean;
   onChange?: (event: CardNumberChangeEvent) => void;
-  onFocus?: (event: InputEvent) => void;
-  onBlur?: (event: InputEvent) => void;
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
   onValidityChange?: (validity: FieldValidity) => void;
 };
 
@@ -107,8 +107,9 @@ export const CardNumber: FunctionalComponent<CardNumberProps> = ({
     }
   }, [isValid, isPotentiallyValid]);
 
-  const setValueAndCursor: any = (event: InputEvent) => {
-    const { value: rawValue, selectionStart, selectionEnd } = event.target;
+  const setValueAndCursor = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const { value: rawValue, selectionStart, selectionEnd } = target;
     const value = removeNonDigits(rawValue);
     const detectedCardType = detectCardType(value);
     const maskedValue = maskCard(value);
@@ -135,7 +136,7 @@ export const CardNumber: FunctionalComponent<CardNumberProps> = ({
       endCursorPosition += 1;
     }
 
-    moveCursor(event.target, startCursorPosition, endCursorPosition);
+    moveCursor(target, startCursorPosition, endCursorPosition);
 
     setCardType(detectedCardType);
     setInputState({
@@ -158,7 +159,7 @@ export const CardNumber: FunctionalComponent<CardNumberProps> = ({
     }
   };
 
-  const onFocusEvent: any = (event: InputEvent) => {
+  const onFocusEvent = (event: FocusEvent) => {
     if (typeof onFocus === "function") {
       onFocus(event);
     }
@@ -172,7 +173,7 @@ export const CardNumber: FunctionalComponent<CardNumberProps> = ({
     setInputState((newState: InputState) => ({ ...newState, ...updatedState }));
   };
 
-  const onBlurEvent: any = (event: InputEvent) => {
+  const onBlurEvent = (event: FocusEvent) => {
     const updatedState = {
       maskedInputValue,
       isPotentiallyValid,
@@ -192,7 +193,7 @@ export const CardNumber: FunctionalComponent<CardNumberProps> = ({
     setInputState((newState) => ({ ...newState, ...updatedState }));
   };
 
-  const onKeyDownEvent: any = (event: InputEvent) => {
+  const onKeyDownEvent = (event: KeyboardEvent) => {
     if (allowNavigation) {
       navigateOnKeyDown(event, navigation);
     }

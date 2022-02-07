@@ -12,8 +12,8 @@ import type {
   CardNavigation,
   FieldValidity,
   InputState,
-  InputEvent,
 } from "../types";
+import type { JSXInternal } from "preact/src/jsx";
 
 type CardNameProps = {
   name?: string;
@@ -22,13 +22,13 @@ type CardNameProps = {
   state?: InputState;
   className?: string;
   placeholder?: string;
-  style?: any;
+  style?: JSXInternal.CSSProperties;
   maxLength?: number;
   navigation?: CardNavigation;
   allowNavigation?: boolean;
   onChange?: (nameEvent: CardNameChangeEvent) => void;
-  onFocus?: (event: InputEvent) => void;
-  onBlur?: (event: InputEvent) => void;
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
   onValidityChange?: (validity: FieldValidity) => void;
 };
 
@@ -69,8 +69,8 @@ export const CardName: FunctionalComponent<CardNameProps> = ({
     }
   }, [isValid, isPotentiallyValid]);
 
-  const setNameValue: any = (event: InputEvent): void => {
-    const { value } = event.target;
+  const setNameValue = (event: Event): void => {
+    const { value } = event.target as HTMLInputElement;
 
     setInputState({
       ...inputState,
@@ -84,13 +84,13 @@ export const CardName: FunctionalComponent<CardNameProps> = ({
     }
   };
 
-  const onKeyDownEvent: any = (event: InputEvent): void => {
+  const onKeyDownEvent = (event: KeyboardEvent): void => {
     if (allowNavigation) {
       navigateOnKeyDown(event, navigation);
     }
   };
 
-  const onFocusEvent: any = (event: InputEvent): void => {
+  const onFocusEvent = (event: FocusEvent): void => {
     if (typeof onFocus === "function") {
       onFocus(event);
     }
@@ -99,7 +99,7 @@ export const CardName: FunctionalComponent<CardNameProps> = ({
     }
   };
 
-  const onBlurEvent: any = (event: InputEvent): void => {
+  const onBlurEvent = (event: FocusEvent): void => {
     if (typeof onBlur === "function") {
       onBlur(event);
     }

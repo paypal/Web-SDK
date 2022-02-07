@@ -1,5 +1,6 @@
-import { FunctionalComponent, h } from "preact";
+import { FunctionalComponent } from "preact";
 import { useState, useEffect } from "preact/hooks";
+import type CSS from "csstype";
 
 import {
   checkCVV,
@@ -14,8 +15,8 @@ import type {
   CardNavigation,
   FieldValidity,
   InputState,
-  InputEvent,
 } from "../types";
+import type { JSXInternal } from "preact/src/jsx";
 
 type CardCvvProps = {
   name?: string;
@@ -25,14 +26,14 @@ type CardCvvProps = {
   state?: InputState;
   className?: string;
   placeholder?: string;
-  style?: any;
+  style?: JSXInternal.CSSProperties;
   maxLength?: number;
   cardType?: CardType;
   navigation?: CardNavigation;
   allowNavigation?: boolean;
   onChange?: (cvvEvent: CardCvvChangeEvent) => void;
-  onFocus?: (event: InputEvent) => void;
-  onBlur?: (event: InputEvent) => void;
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
   onValidityChange?: (validity: FieldValidity) => void;
 };
 
@@ -77,8 +78,8 @@ export const CardCVV: FunctionalComponent<CardCvvProps> = ({
     }
   }, [isValid, isPotentiallyValid]);
 
-  const setCvvValue: any = (event: InputEvent): void => {
-    const { value: rawValue } = event.target;
+  const setCvvValue = (event: Event): void => {
+    const rawValue = (event.target as HTMLInputElement).value || "";
     const value = removeNonDigits(rawValue);
 
     setInputState({
@@ -93,13 +94,13 @@ export const CardCVV: FunctionalComponent<CardCvvProps> = ({
     }
   };
 
-  const onKeyDownEvent: any = (event: InputEvent): void => {
+  const onKeyDownEvent = (event: KeyboardEvent): void => {
     if (allowNavigation) {
       navigateOnKeyDown(event, navigation);
     }
   };
 
-  const onFocusEvent: any = (event: InputEvent): void => {
+  const onFocusEvent = (event: FocusEvent): void => {
     if (typeof onFocus === "function") {
       onFocus(event);
     }
@@ -108,7 +109,7 @@ export const CardCVV: FunctionalComponent<CardCvvProps> = ({
     }
   };
 
-  const onBlurEvent: any = (event: InputEvent): void => {
+  const onBlurEvent = (event: FocusEvent): void => {
     if (typeof onBlur === "function") {
       onBlur(event);
     }

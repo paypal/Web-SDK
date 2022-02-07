@@ -79,32 +79,26 @@ export type CardType = {
   };
 };
 
-export type InputEvent = {
-  key: string;
-  target: HTMLInputElement;
-  type?: string;
-};
-
 export type CardNumberChangeEvent = {
-  event: InputEvent;
+  event: Event;
   cardNumber: string;
   cardMaskedNumber: string;
   cardType: CardType;
 };
 
 export type CardExpiryChangeEvent = {
-  event: InputEvent;
+  event: Event;
   maskedDate: string;
   date: string;
 };
 
 export type CardCvvChangeEvent = {
-  event: InputEvent;
+  event: Event;
   cardCvv: string;
 };
 
 export type CardNameChangeEvent = {
-  event: InputEvent;
+  event: Event;
   cardName: string;
 };
 

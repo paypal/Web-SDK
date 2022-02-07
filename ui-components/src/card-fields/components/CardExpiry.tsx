@@ -1,4 +1,4 @@
-import { FunctionalComponent, h } from "preact";
+import { FunctionalComponent } from "preact";
 import { useState, useEffect } from "preact/hooks";
 
 import {
@@ -16,8 +16,8 @@ import type {
   CardNavigation,
   FieldValidity,
   InputState,
-  InputEvent,
 } from "../types";
+import type { JSXInternal } from "preact/src/jsx";
 
 type CardExpiryProps = {
   name?: string;
@@ -27,13 +27,13 @@ type CardExpiryProps = {
   state?: InputState;
   className?: string;
   placeholder?: string;
-  style?: any;
+  style?: JSXInternal.CSSProperties;
   maxLength?: number;
   navigation?: CardNavigation;
   allowNavigation?: boolean;
   onChange?: (expiryEvent: CardExpiryChangeEvent) => void;
-  onFocus?: (event: InputEvent) => void;
-  onBlur?: (event: InputEvent) => void;
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
   onValidityChange?: (validity: FieldValidity) => void;
 };
 
@@ -82,8 +82,9 @@ export const CardExpiry: FunctionalComponent<CardExpiryProps> = ({
     }
   }, [isValid, isPotentiallyValid]);
 
-  const setDateMask: any = (event: InputEvent): void => {
-    const { value: rawValue, selectionStart, selectionEnd } = event.target;
+  const setDateMask = (event: Event): void => {
+    const target = event.target as HTMLInputElement;
+    const { value: rawValue, selectionStart, selectionEnd } = target;
     const value = removeNonDigits(rawValue);
     const mask = formatDate(value, rawValue);
 
@@ -95,7 +96,7 @@ export const CardExpiry: FunctionalComponent<CardExpiryProps> = ({
       endCursorPosition = mask.length;
     }
 
-    moveCursor(event.target, startCursorPosition, endCursorPosition);
+    moveCursor(target, startCursorPosition, endCursorPosition);
 
     setInputState({
       ...inputState,
@@ -110,11 +111,9 @@ export const CardExpiry: FunctionalComponent<CardExpiryProps> = ({
     }
   };
 
-  const onKeyDownEvent: any = (event: InputEvent): void => {
-    const {
-      target: { value },
-      key,
-    } = event;
+  const onKeyDownEvent = (event: KeyboardEvent): void => {
+    const { key } = event;
+    const { value } = event.target as HTMLInputElement;
 
     const last = value.trim().slice(-1);
     if (last === "/" && key === "Backspace") {
@@ -131,7 +130,7 @@ export const CardExpiry: FunctionalComponent<CardExpiryProps> = ({
     }
   };
 
-  const onFocusEvent: any = (event: InputEvent): void => {
+  const onFocusEvent = (event: FocusEvent): void => {
     if (typeof onFocus === "function") {
       onFocus(event);
     }
@@ -140,7 +139,7 @@ export const CardExpiry: FunctionalComponent<CardExpiryProps> = ({
     }
   };
 
-  const onBlurEvent: any = (event: InputEvent): void => {
+  const onBlurEvent = (event: FocusEvent): void => {
     if (typeof onBlur === "function") {
       onBlur(event);
     }
@@ -153,7 +152,7 @@ export const CardExpiry: FunctionalComponent<CardExpiryProps> = ({
     }
   };
 
-  const onPasteEvent: any = (): void => {
+  const onPasteEvent = (): void => {
     setInputState((newState) => ({ ...newState, contentPasted: true }));
   };
 

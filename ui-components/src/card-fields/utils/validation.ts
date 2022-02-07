@@ -8,7 +8,6 @@ import type {
   InputState,
   FieldValidity,
   FieldStyle,
-  InputEvent,
   Card,
   ExtraFields,
 } from "../types";
@@ -434,13 +433,12 @@ export function goToPreviousField(ref: {
 
 // Navigate between fields using the arrow keys and/or the backspace
 export function navigateOnKeyDown(
-  event: InputEvent,
+  event: KeyboardEvent,
   navigation: CardNavigation
 ): void {
-  const {
-    target: { value, selectionStart, selectionEnd },
-    key,
-  } = event;
+  const { key } = event;
+  const { value, selectionStart, selectionEnd } =
+    event.target as HTMLInputElement;
 
   if (
     selectionStart === 0 &&
