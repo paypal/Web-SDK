@@ -1,6 +1,7 @@
 {
   "name": "@paypal/ui-components",
-  "version": "1.0.0",
+  "version": "0.0.0",
+  "private": true,
   "description": "[WIP] Main UI components for the PayPal Unified SDK",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -23,12 +24,10 @@
   "homepage": "https://github.com/paypal/Web-SDK#readme",
   "keywords": [
     "paypal",
-    "braintree",
     "payments"
   ],
   "dependencies": {
-    "card-validator": "^8.1.1",
-    "preact": "^10.6.4"
+    "card-validator": "^8.1.1"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
@@ -41,6 +40,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.4.7",
+    "preact": "^10.6.4",
     "prettier": "^2.5.1",
     "rollup": "^2.66.1",
     "rollup-plugin-dts": "^4.1.0",
