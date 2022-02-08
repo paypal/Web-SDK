@@ -5,6 +5,7 @@
   "description": "[WIP] One merchant integration point for all of PayPal's services",
   "main": "index.js",
   "workspaces": [
+    "asset-server",
     "demo",
     "frame-component",
     "sdk",
@@ -16,7 +17,9 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "demo": "npm run dev --workspace=demo",
+    "dev": "run-p dev:**",
+    "dev:asset-server": "npm start --workspace=asset-server",
+    "dev:demo": "npm run dev --workspace=demo",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present"
   },
@@ -30,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/paypal/Web-SDK/issues"
   },
-  "homepage": "https://github.com/paypal/Web-SDK#readme"
+  "homepage": "https://github.com/paypal/Web-SDK#readme",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
 }
