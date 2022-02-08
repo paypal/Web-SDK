@@ -1,0 +1,11 @@
+{
+  "name": "asset-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "http-server -p 9001 dist"
+  },
+  "dependencies": {
+    "http-server": "^14.1.0"
+  }
+}
