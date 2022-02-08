@@ -18,17 +18,19 @@ export class ChildComponent {
     this.busConfig = initialize({
       channel: window.location.hash.slice(1, window.location.hash.length),
     });
-    this.on();
+    this.handShake();
   }
 
-  on() {
+  private handShake() {
+    console.log('this.busConfig --->', this.busConfig);
     emit(this.busConfig, "child-ready", {}, (props) => {
+      console.log('this.busConfig 2 --->', this.busConfig);
       this.parentProps = props as ParentProps;
       this.onCreate();
     });
   }
 
-  onCreate() {
+  private onCreate() {
     console.log("I got called");
     if (typeof this.properties?.onCreate === "function") {
       this.properties.onCreate({

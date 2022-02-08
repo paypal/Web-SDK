@@ -2,6 +2,9 @@ import { createParent } from "../../src";
 
 export const parentComponent = createParent({
   url: "http://localhost:3000/child.html",
+  properties: {
+    backgroundColor: "red"
+  }
 });
 
 const app = document.querySelector<HTMLDivElement>("#app")!;

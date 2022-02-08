@@ -5,6 +5,10 @@ export type ParentProps = FramebusOptions & {
   properties?: {
     [key: string]: unknown;
   };
+  methods?: [string],
+  hooks?: {
+    [key: string]: Function
+  }
 };
 
 export class ParentComponent {
@@ -12,23 +16,34 @@ export class ParentComponent {
   private iframe: HTMLIFrameElement;
   private busConfig: FramebusConfig;
 
-  constructor(props: ParentProps = {}) {
-    this.url = props.url as string;
+  constructor(options: ParentProps = {}) {
+    this.url = options.url as string;
 
     // TODO unique identifier for channel property as well
     this.busConfig = initialize({
-      origin: this.url,
-      channel: props.channel,
+      channel: options.channel,
     });
     // TODO will need to pass the channel bit as well
     // TODO should remove default iframe styling
     this.iframe = document.createElement("iframe");
     this.iframe.style.border = "0";
 
+    console.log('setting up teh chld ready listgener')
+    console.log(this.busConfig);
     on(this.busConfig, "child-ready", (data, reply) => {
       console.log("got the event that the child is ready");
-      reply(props);
+      reply({
+        properties: options.properties
+      });
     });
+    // TODO define the methods property as a record with string keys and function values
+    // this.methods = {};
+    // loop through the method names array
+    // this.methods[methodName] = (...args) => {
+    //   emit(config, methodName-with-namespace, {
+    //     args
+    //   })
+    // }
   }
 
   async render(container: HTMLElement): Promise<this> {
