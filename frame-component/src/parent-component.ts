@@ -1,20 +1,22 @@
-import { initialize, FramebusConfig, FramebusOptions, on } from "framebus";
+import { initialize, FramebusConfig, FramebusOptions, on, emit } from "framebus";
 
 export type ParentProps = FramebusOptions & {
   url?: string;
   properties?: {
     [key: string]: unknown;
   };
-  methods?: [string],
+  methods?: string[],
   hooks?: {
     [key: string]: Function
-  }
+  },
 };
 
 export class ParentComponent {
   url: string;
   private iframe: HTMLIFrameElement;
   private busConfig: FramebusConfig;
+
+  methods: { [key: string]: Function } = {};
 
   constructor(options: ParentProps = {}) {
     this.url = options.url as string;
@@ -28,22 +30,32 @@ export class ParentComponent {
     this.iframe = document.createElement("iframe");
     this.iframe.style.border = "0";
 
-    console.log('setting up teh chld ready listgener')
-    console.log(this.busConfig);
     on(this.busConfig, "child-ready", (data, reply) => {
-      console.log("got the event that the child is ready");
       reply({
-        properties: options.properties
+        properties: options.properties,
       });
     });
-    // TODO define the methods property as a record with string keys and function values
-    // this.methods = {};
-    // loop through the method names array
-    // this.methods[methodName] = (...args) => {
-    //   emit(config, methodName-with-namespace, {
-    //     args
-    //   })
-    // }
+
+    if (Array.isArray(options.methods) && options.methods.length) {
+      this.setMethods(options.methods);
+    }
+    if (options.hooks && Object.keys(options.hooks).length) {
+      this.setHooks(options.hooks);
+    }
+  }
+
+  private setMethods(methods: Array<string>) {
+    for (const methodName of methods) {
+      this.methods[methodName] = (...args: any) => {
+        emit(this.busConfig, `${methodName}-parent-method`, { args });
+      }
+    }
+  }
+
+  private setHooks(hooksMap: { [key: string]: Function }) {
+    Object.keys(hooksMap).forEach((methodName) => {
+      on(this.busConfig, `${methodName}-parent-method`, (data) => hooksMap[methodName](data));
+    })
   }
 
   async render(container: HTMLElement): Promise<this> {

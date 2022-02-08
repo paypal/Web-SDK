@@ -32,8 +32,8 @@ const childComponent = createChild({
     // such as applying any properties that the parent has configured
     document.querySelector('#background-element').style.backgroundColor = properties.backgroundColor;
   },
-  hooks: ["onFoo"],
-  methods: {
+  methods: ["onFoo"],
+  hooks: {
     bar(arg1, arg2, arg3) {
       console.log("bar was called on the parent frame with args:", arg1, arg2, arg3, "so I am logging this on the child");
     }

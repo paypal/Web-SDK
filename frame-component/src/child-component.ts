@@ -1,11 +1,12 @@
 import type { ParentProps } from "./parent-component";
-import { emit, FramebusConfig, initialize } from "framebus";
+import { emit, FramebusConfig, initialize, on } from "framebus";
 
 export type ChildProps = {
   onCreate?: (props?: {
-    // methods: ParentProps["methods"];
     properties: ParentProps["properties"];
   }) => void;
+  methods?: ParentProps["methods"];
+  hooks?: ParentProps["hooks"];
 };
 
 export class ChildComponent {
@@ -13,8 +14,10 @@ export class ChildComponent {
   private parentProps: ParentProps = {};
   private busConfig: FramebusConfig;
 
-  constructor(props: ChildProps = {}) {
-    this.properties = props;
+  methods: { [key: string]: Function } = {};
+
+  constructor(options: ChildProps) {
+    this.properties = options;
     this.busConfig = initialize({
       channel: window.location.hash.slice(1, window.location.hash.length),
     });
@@ -22,16 +25,36 @@ export class ChildComponent {
   }
 
   private handShake() {
-    console.log('this.busConfig --->', this.busConfig);
     emit(this.busConfig, "child-ready", {}, (props) => {
-      console.log('this.busConfig 2 --->', this.busConfig);
       this.parentProps = props as ParentProps;
+      if (Array.isArray(this.properties.methods) && this.properties.methods.length) {
+        this.setMethods(this.properties.methods);
+      }
+      if (this.properties.hooks && Object.keys(this.properties.hooks).length) {
+        this.setHooks(this.properties.hooks);
+      }
       this.onCreate();
     });
   }
 
+  private setMethods(methods: Array<string>) {
+    for (const methodName of methods) {
+      this.methods[methodName] = (...args: any) => {
+        emit(this.busConfig, `${methodName}-parent-method`, { args });
+      }
+    }
+  }
+
+  private setHooks(hooksMap: { [key: string]: Function }) {
+    Object.keys(hooksMap).forEach((methodName) => {
+      on(this.busConfig, `${methodName}-parent-method`, (data) => {
+        const args = data.args as unknown[];
+        hooksMap[methodName](...args)
+      });
+    })
+  }
+
   private onCreate() {
-    console.log("I got called");
     if (typeof this.properties?.onCreate === "function") {
       this.properties.onCreate({
         // methods: this.parentProps.methods,
