@@ -1,6 +1,6 @@
 # Development Asset Server
 
-This workspace serves as a structural mirror to the production asset server.
+This workspace serves as a structural mirror to the production asset server. (TODO, include link to domain of the production asset server once it is deployed)
 
 To launch it, simply run:
 
