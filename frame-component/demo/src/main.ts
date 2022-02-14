@@ -1,26 +1,32 @@
 import { createParent } from "../../src";
 
+const input = document.querySelector<HTMLInputElement>(
+  "#background-color-choice"
+)!;
+const button = document.querySelector<HTMLButtonElement>(
+  "#background-color-submit"
+)!;
+const messageContainer = document.querySelector<HTMLElement>(
+  "#message-from-iframe"
+)!;
+
+const main = document.querySelector<HTMLElement>("#main")!;
+
 export const parentComponent = createParent({
   url: "http://localhost:3000/child.html",
   properties: {
-    backgroundColor: "red"
+    backgroundColor: "red",
   },
-  methods: ['setBackgroundColor', 'foo'],
+  methods: ["updateBackgroundColor"],
   hooks: {
-    bar(){
-      console.log('This is a method called from the child and log in the parent')
-    }
-  }
+    sendMessage(message: string) {
+      messageContainer.innerText = message;
+    },
+  },
 });
-
-const app = document.querySelector<HTMLDivElement>("#app")!;
-const input = document.querySelector<HTMLInputElement>("#background-color-choice")!;
-const button = document.querySelector<HTMLButtonElement>("#background-color-submit")!;
-
-const main = document.querySelector<HTMLElement>("#main")!;
 
 parentComponent.render(main);
 
 button.addEventListener("click", () => {
-  parentComponent.methods.setBackgroundColor(input.value);
-})
+  parentComponent.methods.updateBackgroundColor(input.value);
+});
