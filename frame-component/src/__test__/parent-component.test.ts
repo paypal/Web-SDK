@@ -1,17 +1,32 @@
 import { ParentComponent } from "../parent-component";
-import { on, initialize, FramebusConfig } from "framebus";
+import { FrameBaseComponent } from "../frame-base-component";
+import { on, FramebusConfig } from "framebus";
 import uuid from "@braintree/uuid";
 
 jest.mock("framebus");
+jest.mock("@braintree/uuid");
+jest.mock("../frame-base-component");
 
 describe("ParentComponent", () => {
   beforeEach(() => {
-    jest.mocked(initialize).mockImplementation((options = {}) => {
-      return {
-        channel: options.channel
-      } as FramebusConfig;
+    jest.mocked(uuid).mockReturnValue("fake-uuid");
+  });
+
+  it("should create channel with unique id", () => {
+    const parent = new ParentComponent({
+      url: "https://example.com/child-frame",
+      properties: {
+        foo: "bar",
+      },
     });
-  })
+
+    expect(FrameBaseComponent).toBeCalledTimes(1);
+    expect(FrameBaseComponent).toBeCalledWith({
+      channel: "fake-uuid",
+      methods: [],
+      hooks: {},
+    });
+  });
 
   it("should reply with the props to the child with the handshake is received", () => {
     const spy = jest.fn();
@@ -26,42 +41,41 @@ describe("ParentComponent", () => {
 
     const parent = new ParentComponent({
       url: "https://example.com/child-frame",
-      channel: "channel",
       properties: {
-        foo: "bar"
-      }
+        foo: "bar",
+      },
     });
 
-    expect(spy).toBeCalledTimes(1)
+    expect(spy).toBeCalledTimes(1);
     expect(spy).toBeCalledWith({
       properties: {
-        foo: "bar"
-      }
+        foo: "bar",
+      },
     });
   });
 
   describe("render", () => {
-
-    const channel = uuid();
-
     it("inserts the iframe element into the provided DOM node", async () => {
-      const parent = new ParentComponent({ url: "https://example.com/child-frame", channel });
+      const parent = new ParentComponent({
+        url: "https://example.com/child-frame",
+      });
       const container = document.createElement("div");
 
       await parent.render(container);
 
       const iframe = container.querySelector("iframe");
-      expect(iframe?.src).toBe(`https://example.com/child-frame#${channel}`);
+      expect(iframe?.src).toContain("https://example.com/child-frame#");
     });
 
     it("resolves with the component instance", async () => {
-      const parent = new ParentComponent();
+      const parent = new ParentComponent({
+        url: "https://example.com/child-frame",
+      });
       const container = document.createElement("div");
 
       const instance = await parent.render(container);
 
       expect(instance).toBe(parent);
     });
-
   });
 });

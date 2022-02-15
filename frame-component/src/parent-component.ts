@@ -1,67 +1,50 @@
-import { initialize, FramebusConfig, FramebusOptions, on, emit } from "framebus";
+import { on } from "framebus";
+import uuid from "@braintree/uuid";
+import {
+  FrameBaseComponent,
+  FrameComponentProps,
+} from "./frame-base-component";
 
-export type ParentProps = FramebusOptions & {
-  url?: string;
+export type ParentProps = Partial<FrameComponentProps> & {
+  url: string;
   properties?: {
     [key: string]: unknown;
   };
-  methods?: string[],
-  hooks?: {
-    [key: string]: Function
-  },
 };
 
-export class ParentComponent {
+export class ParentComponent extends FrameBaseComponent {
   url: string;
   private iframe: HTMLIFrameElement;
-  private busConfig: FramebusConfig;
 
-  methods: { [key: string]: Function } = {};
-
-  constructor(options: ParentProps = {}) {
+  constructor(options: ParentProps) {
+    super({
+      channel: uuid(),
+      methods: options.methods || [],
+      hooks: options.hooks || {},
+    });
     this.url = options.url as string;
 
-    // TODO unique identifier for channel property as well
-    this.busConfig = initialize({
-      channel: options.channel,
-    });
-    // TODO will need to pass the channel bit as well
     // TODO should remove default iframe styling
     this.iframe = document.createElement("iframe");
     this.iframe.style.border = "0";
 
+    // TODO move event-name to constant
+    // TODO should this live in render instead?
     on(this.busConfig, "child-ready", (data, reply) => {
       reply({
         properties: options.properties,
       });
+      // TODO since this is a one time event, we should call `off` to remove it
     });
-
-    if (Array.isArray(options.methods) && options.methods.length) {
-      this.setMethods(options.methods);
-    }
-    if (options.hooks && Object.keys(options.hooks).length) {
-      this.setHooks(options.hooks);
-    }
-  }
-
-  private setMethods(methods: Array<string>) {
-    for (const methodName of methods) {
-      this.methods[methodName] = (...args: any) => {
-        emit(this.busConfig, `${methodName}-parent-method`, { args });
-      }
-    }
-  }
-
-  private setHooks(hooksMap: { [key: string]: Function }) {
-    Object.keys(hooksMap).forEach((methodName) => {
-      on(this.busConfig, `${methodName}-parent-method`, (data) => hooksMap[methodName](data));
-    })
   }
 
   async render(container: HTMLElement): Promise<this> {
-    this.iframe.src = `${this.url}${this.busConfig.channel ? '#' + this.busConfig.channel : ''}`;
+    this.iframe.src = `${this.url}#${this.channel}`;
 
     container.appendChild(this.iframe);
+
+    // TODO should probably wait until the child frame
+    // reports it is ready before resolving
     return Promise.resolve(this);
   }
 }

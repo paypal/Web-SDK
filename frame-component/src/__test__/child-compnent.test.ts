@@ -1,37 +1,46 @@
 import { ChildComponent } from "../child-component";
+import { FrameBaseComponent } from "../frame-base-component";
 import { emit, initialize } from "framebus";
 
 jest.mock("framebus");
+jest.mock("../frame-base-component");
 
 describe("ChildComponent", () => {
-  it("initializes framebus with a channel from the url hash", () => {
+  it("initializes with a channel from the url hash", () => {
     const originalLocation = window.location;
     // @ts-ignore
     delete window.location;
     // @ts-ignore
     window.location = {
-      hash: "#unique-id"
-    }
+      hash: "#unique-id",
+    };
 
-    const child =  new ChildComponent({ 
-      onCreate: jest.fn()
-    })
+    const child = new ChildComponent({
+      onCreate: jest.fn(),
+    });
 
-    expect(initialize).toBeCalledTimes(1);
-    expect(initialize).toBeCalledWith({
-      channel: "unique-id"
+    expect(FrameBaseComponent).toBeCalledTimes(1);
+    expect(FrameBaseComponent).toBeCalledWith({
+      channel: "unique-id",
+      methods: [],
+      hooks: {},
     });
 
     window.location = originalLocation;
   });
 
   it("emits a child-ready event", () => {
-    const child =  new ChildComponent({ 
-      onCreate: jest.fn()
-    })
+    const child = new ChildComponent({
+      onCreate: jest.fn(),
+    });
 
     expect(emit).toBeCalledTimes(1);
-    expect(emit).toBeCalledWith(undefined, "child-ready", {}, expect.any(Function));
+    expect(emit).toBeCalledWith(
+      undefined,
+      "child-ready",
+      {},
+      expect.any(Function)
+    );
   });
 
   it("calls configured onCreate method with parent properties recieved from the child-ready event", () => {
@@ -39,24 +48,24 @@ describe("ChildComponent", () => {
       if (cb) {
         cb({
           properties: {
-            parentProperty: "foo"
-          }
+            parentProperty: "foo",
+          },
         });
       }
-      
+
       return true;
     });
     const onCreate = jest.fn();
 
-    new ChildComponent({ 
-      onCreate
+    new ChildComponent({
+      onCreate,
     });
 
     expect(onCreate).toBeCalledTimes(1);
     expect(onCreate).toBeCalledWith({
       properties: {
-        parentProperty: "foo"
-      }
+        parentProperty: "foo",
+      },
     });
   });
 
@@ -64,10 +73,10 @@ describe("ChildComponent", () => {
     jest.mocked(emit).mockImplementation((config, eventName, data, cb) => {
       if (cb) {
         cb({
-          parentProperty: "foo"
+          parentProperty: "foo",
         });
       }
-      
+
       return true;
     });
 
