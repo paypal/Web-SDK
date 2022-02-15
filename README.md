@@ -62,12 +62,19 @@ Run `npm install` in the root of the directory. Since the repo is using [npm wor
 This mono repo is designed so that you can clone it down and start working on the PayPal Web SDK with as little friction as possible. Currently, the repo is split into 3 workspaces:
 
 * [sdk](./sdk/) - the module that a merchant will use to integrate with PayPal's payment processing system
+* [asset-server](./asset-server/) - a development asset server that mirrors the production asset server in terms of structure. The code from `sdk` should be bundled and copied to the `dist` folder in this workspace to emulate the hosted assets in production.
 * [demo](./demo/) - a demo app for testing out the sdk
 * [frame-component](./frame-component/) - a component to facilitate creating iframe and popup based components (TODO, this may be changed to `ui-components` and be one of many pieces of that more general workspace)
 
-### Demo App
+### Start
 
-Run `npm run demo` to start the [vite](https://vitejs.dev/guide/) demo app located in the `/demo` directory.
+To start the asset server and the demo app in parallel, run:
+
+(TODO: this should also run the SDK and UI component build watch tasks)
+
+```bash
+npm run dev
+```
 
 ## Release Process
 

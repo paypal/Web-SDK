@@ -5,6 +5,7 @@
   "description": "[WIP] One merchant integration point for all of PayPal's services",
   "main": "index.js",
   "workspaces": [
+    "asset-server",
     "demo",
     "frame-component",
     "sdk"
@@ -15,7 +16,9 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "demo": "npm run dev --workspace=demo",
+    "dev": "run-p dev:**",
+    "dev:asset-server": "npm start --workspace=asset-server",
+    "dev:demo": "npm run dev --workspace=demo",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present"
   },
@@ -36,6 +39,11 @@
     "@typescript-eslint/parser": "^5.10.1",
     "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0"
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.4.7",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.5.5"
   }
 }
