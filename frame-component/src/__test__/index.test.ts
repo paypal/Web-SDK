@@ -5,7 +5,6 @@ import { ParentComponent } from "../parent-component";
 describe("FrameComponent", () => {
   describe("create", () => {
     it("returns a parent component", () => {
-
       const parentComponent = createParent({
         url: "https://example.com/iframe",
       });

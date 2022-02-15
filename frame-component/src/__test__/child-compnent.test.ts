@@ -1,6 +1,6 @@
 import { ChildComponent } from "../child-component";
 import { FrameBaseComponent } from "../frame-base-component";
-import { emit, initialize } from "framebus";
+import { emit } from "framebus";
 
 jest.mock("framebus");
 jest.mock("../frame-base-component");
@@ -8,14 +8,16 @@ jest.mock("../frame-base-component");
 describe("ChildComponent", () => {
   it("initializes with a channel from the url hash", () => {
     const originalLocation = window.location;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     delete window.location;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.location = {
       hash: "#unique-id",
     };
 
-    const child = new ChildComponent({
+    new ChildComponent({
       onCreate: jest.fn(),
     });
 
@@ -30,7 +32,7 @@ describe("ChildComponent", () => {
   });
 
   it("emits a child-ready event", () => {
-    const child = new ChildComponent({
+    new ChildComponent({
       onCreate: jest.fn(),
     });
 

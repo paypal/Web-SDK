@@ -1,5 +1,5 @@
 import type { ParentProps } from "./parent-component";
-import { emit, FramebusConfig, initialize, on } from "framebus";
+import { emit } from "framebus";
 import {
   FrameBaseComponent,
   FrameComponentProps,

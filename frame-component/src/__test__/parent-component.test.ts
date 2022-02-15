@@ -1,6 +1,6 @@
 import { ParentComponent } from "../parent-component";
 import { FrameBaseComponent } from "../frame-base-component";
-import { on, FramebusConfig } from "framebus";
+import { on } from "framebus";
 import uuid from "@braintree/uuid";
 
 jest.mock("framebus");
@@ -13,7 +13,7 @@ describe("ParentComponent", () => {
   });
 
   it("should create channel with unique id", () => {
-    const parent = new ParentComponent({
+    new ParentComponent({
       url: "https://example.com/child-frame",
       properties: {
         foo: "bar",
@@ -39,7 +39,7 @@ describe("ParentComponent", () => {
       return true;
     });
 
-    const parent = new ParentComponent({
+    new ParentComponent({
       url: "https://example.com/child-frame",
       properties: {
         foo: "bar",

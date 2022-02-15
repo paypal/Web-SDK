@@ -1,16 +1,16 @@
 import { createParent } from "../../src";
 
-const input = document.querySelector<HTMLInputElement>(
-  "#background-color-choice"
-)!;
-const button = document.querySelector<HTMLButtonElement>(
-  "#background-color-submit"
-)!;
-const messageContainer = document.querySelector<HTMLElement>(
-  "#message-from-iframe"
-)!;
+const input = document.getElementById(
+  "background-color-choice"
+) as HTMLInputElement;
+const button = document.getElementById(
+  "background-color-submit"
+) as HTMLButtonElement;
+const messageContainer = document.getElementById(
+  "message-from-iframe"
+) as HTMLElement;
 
-const main = document.querySelector<HTMLElement>("#main")!;
+const main = document.getElementById("main") as HTMLElement;
 
 export const parentComponent = createParent({
   url: "http://localhost:3000/child.html",

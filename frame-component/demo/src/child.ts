@@ -1,12 +1,12 @@
 import { createChild } from "../../src";
 
-const app = document.querySelector<HTMLDivElement>("#app")!;
-const sendMessageButton = document.querySelector<HTMLButtonElement>(
-  "#send-message-button"
-)!;
-const sendMessageInput = document.querySelector<HTMLInputElement>(
-  "#send-message-input"
-)!;
+const app = document.getElementById("app") as HTMLDivElement;
+const sendMessageButton = document.getElementById(
+  "send-message-button"
+) as HTMLButtonElement;
+const sendMessageInput = document.getElementById(
+  "send-message-input"
+) as HTMLInputElement;
 
 const childComponent = createChild({
   onCreate(options) {

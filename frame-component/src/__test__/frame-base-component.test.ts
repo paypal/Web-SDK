@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { FrameBaseComponent } from "../frame-base-component";
 import { on, emitAsPromise, initialize, FramebusConfig } from "framebus";
 
@@ -15,7 +16,7 @@ describe("FrameBaseComponent", () => {
   });
 
   it("should create a bus config with provided channel", () => {
-    const component = new SubComponent({
+    new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {},
@@ -105,7 +106,7 @@ describe("FrameBaseComponent", () => {
     const fooSpy = jest.fn();
     const barSpy = jest.fn();
 
-    const component = new SubComponent({
+    new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {
@@ -159,7 +160,7 @@ describe("FrameBaseComponent", () => {
     const fooSpy = jest.fn().mockResolvedValue("foo");
     const barSpy = jest.fn().mockReturnValue("bar");
 
-    const component = new SubComponent({
+    new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {
@@ -210,7 +211,7 @@ describe("FrameBaseComponent", () => {
       throw new Error("some other error");
     });
 
-    const component = new SubComponent({
+    new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {
@@ -263,7 +264,7 @@ describe("FrameBaseComponent", () => {
       throw { message: "not some other error" };
     });
 
-    const component = new SubComponent({
+    new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {
