@@ -49,8 +49,5 @@
   "engines": {
     "npm": ">=8",
     "node": ">=16"
-  },
-  "dependencies": {
-    "@braintree/iframer": "^1.1.0"
   }
 }
