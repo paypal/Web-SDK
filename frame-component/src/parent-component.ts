@@ -25,15 +25,16 @@ export class ParentComponent extends FrameBaseComponent {
     });
     this.url = options.url as string;
 
-    // TODO iframe creation should be moved to helper private method
-    // TODO iframe should have title
-    // TODO should remove default iframe styling
-    const iframeName = JSON.stringify(options.properties || {});
+    // this is a little odd, but since we want the child component to
+    // have access to the properties set in the parent component
+    // right away, we embed them as part of the iframe name
+    // where the child component can parse them right away
+    const parentProperties = JSON.stringify(options.properties || {});
 
+    // TODO should be able to configure title and id in props
     this.iframe = iFramer({
-      name: iframeName,
-      style: {}
-    }) 
+      name: parentProperties,
+    });
   }
 
   async render(container: HTMLElement): Promise<this> {

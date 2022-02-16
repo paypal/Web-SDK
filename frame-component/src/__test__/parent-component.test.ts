@@ -12,6 +12,7 @@ jest.mock("@braintree/iframer");
 describe("ParentComponent", () => {
   beforeEach(() => {
     jest.mocked(uuid).mockReturnValue("fake-uuid");
+    jest.mocked(iFramer).mockReturnValue(document.createElement("iframe"));
   });
 
   it("should create channel with unique id", () => {
@@ -30,20 +31,30 @@ describe("ParentComponent", () => {
     });
   });
 
-  it("removes default iframe styling", async () => {
+  it("creates an iframe with properties embedded in the name", async () => {
     const options = {
       url: "https://example.com/child-frame",
       properties: {
-        foo: "bar"
-      }
-    }
-    new ParentComponent(options)
-    const expectedIframeArgs = {
+        foo: "bar",
+      },
+    };
+
+    new ParentComponent(options);
+
+    expect(iFramer).toHaveBeenCalledWith({
       name: JSON.stringify(options.properties),
-      style: {}
-    }
-    expect(iFramer).toHaveBeenCalledWith(expectedIframeArgs);
-  }) 
+    });
+  });
+
+  it("defaults properties in name to empty object if none are passed", async () => {
+    new ParentComponent({
+      url: "https://example.com/child-frame",
+    });
+
+    expect(iFramer).toHaveBeenCalledWith({
+      name: "{}",
+    });
+  });
 
   describe("render", () => {
     beforeEach(() => {
@@ -69,35 +80,6 @@ describe("ParentComponent", () => {
 
       const iframe = container.querySelector("iframe") as HTMLIFrameElement;
       expect(iframe.src).toContain("https://example.com/child-frame#");
-    });
-
-    it("includes properties as part of the iframe name", async () => {
-      const parent = new ParentComponent({
-        url: "https://example.com/child-frame",
-        properties: {
-          foo: 1,
-          bar: "baz",
-          baz: true,
-        },
-      });
-      const container = document.createElement("div");
-
-      await parent.render(container);
-
-      const iframe = container.querySelector("iframe") as HTMLIFrameElement;
-      expect(iframe.name).toEqual('{"foo":1,"bar":"baz","baz":true}');
-    });
-
-    it("defaults properties in name to empty object if not passed", async () => {
-      const parent = new ParentComponent({
-        url: "https://example.com/child-frame",
-      });
-      const container = document.createElement("div");
-
-      await parent.render(container);
-
-      const iframe = container.querySelector("iframe") as HTMLIFrameElement;
-      expect(iframe.name).toEqual("{}");
     });
 
     it("resolves with the component instance once the child reports it is ready", async () => {
