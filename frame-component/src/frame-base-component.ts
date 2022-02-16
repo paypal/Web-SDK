@@ -2,10 +2,14 @@ import { initialize, FramebusConfig, on, emitAsPromise } from "framebus";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Hook = (...args: any[]) => void;
-type Methods = string[];
+type Method = (...args: any[]) => Promise<unknown>;
+type Methods = {
+  [key: string]: Method;
+};
 type Hooks = {
   [key: string]: Hook;
 };
+type MethodNames = string[];
 type HookResponse = {
   error?: unknown;
   result?: unknown;
@@ -13,7 +17,7 @@ type HookResponse = {
 
 export type FrameComponentProps = {
   channel: string;
-  methods: Methods;
+  methods: MethodNames;
   hooks: Hooks;
 };
 
@@ -21,7 +25,7 @@ export abstract class FrameBaseComponent {
   protected busConfig: FramebusConfig;
   protected channel: string;
 
-  methods: Hooks = {};
+  methods: Methods = {};
 
   constructor(options: FrameComponentProps) {
     this.channel = options.channel;
@@ -43,7 +47,7 @@ export abstract class FrameBaseComponent {
     this.setHooks(options.hooks);
   }
 
-  private setMethods(methods: Methods) {
+  private setMethods(methods: MethodNames) {
     for (const methodName of methods) {
       if (this.methods[methodName]) {
         throw new Error(
