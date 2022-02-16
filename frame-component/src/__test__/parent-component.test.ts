@@ -28,33 +28,20 @@ describe("ParentComponent", () => {
     });
   });
 
-  it("should reply with the props to the child with the handshake is received", () => {
-    const spy = jest.fn();
-
-    jest.mocked(on).mockImplementation((config, eventName, cb) => {
-      if (cb) {
-        cb({}, spy);
-      }
-
-      return true;
-    });
-
-    new ParentComponent({
-      url: "https://example.com/child-frame",
-      properties: {
-        foo: "bar",
-      },
-    });
-
-    expect(spy).toBeCalledTimes(1);
-    expect(spy).toBeCalledWith({
-      properties: {
-        foo: "bar",
-      },
-    });
-  });
-
   describe("render", () => {
+    beforeEach(() => {
+      jest.mocked(on).mockImplementation((config, eventName, cb) => {
+        if (cb) {
+          // mocking the async nature of this action
+          setTimeout(() => {
+            cb({}, jest.fn());
+          }, 1);
+        }
+
+        return true;
+      });
+    });
+
     it("inserts the iframe element into the provided DOM node", async () => {
       const parent = new ParentComponent({
         url: "https://example.com/child-frame",
@@ -67,13 +54,15 @@ describe("ParentComponent", () => {
       expect(iframe?.src).toContain("https://example.com/child-frame#");
     });
 
-    it("resolves with the component instance", async () => {
+    it("resolves with the component instance once the child reports it is ready", async () => {
       const parent = new ParentComponent({
         url: "https://example.com/child-frame",
       });
       const container = document.createElement("div");
 
       const instance = await parent.render(container);
+
+      expect(on).toBeCalledTimes(1);
 
       expect(instance).toBe(parent);
     });

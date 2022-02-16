@@ -1,4 +1,4 @@
-import { on } from "framebus";
+import { off, on } from "framebus";
 import uuid from "@braintree/uuid";
 import {
   FrameBaseComponent,
@@ -27,24 +27,19 @@ export class ParentComponent extends FrameBaseComponent {
     // TODO should remove default iframe styling
     this.iframe = document.createElement("iframe");
     this.iframe.style.border = "0";
-
-    // TODO move event-name to constant
-    // TODO should this live in render instead?
-    on(this.busConfig, "child-ready", (data, reply) => {
-      reply({
-        properties: options.properties,
-      });
-      // TODO since this is a one time event, we should call `off` to remove it
-    });
   }
 
   async render(container: HTMLElement): Promise<this> {
-    this.iframe.src = `${this.url}#${this.channel}`;
+    return new Promise((resolve) => {
+      // TODO move event-name to constant
+      // TODO change to once method when available
+      on(this.busConfig, "child-ready", () => {
+        resolve(this);
+      });
 
-    container.appendChild(this.iframe);
+      this.iframe.src = `${this.url}#${this.channel}`;
 
-    // TODO should probably wait until the child frame
-    // reports it is ready before resolving
-    return Promise.resolve(this);
+      container.appendChild(this.iframe);
+    });
   }
 }
