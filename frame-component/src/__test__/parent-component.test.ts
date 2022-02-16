@@ -50,8 +50,37 @@ describe("ParentComponent", () => {
 
       await parent.render(container);
 
-      const iframe = container.querySelector("iframe");
-      expect(iframe?.src).toContain("https://example.com/child-frame#");
+      const iframe = container.querySelector("iframe") as HTMLIFrameElement;
+      expect(iframe.src).toContain("https://example.com/child-frame#");
+    });
+
+    it("includes properties as part of the iframe name", async () => {
+      const parent = new ParentComponent({
+        url: "https://example.com/child-frame",
+        properties: {
+          foo: 1,
+          bar: "baz",
+          baz: true,
+        },
+      });
+      const container = document.createElement("div");
+
+      await parent.render(container);
+
+      const iframe = container.querySelector("iframe") as HTMLIFrameElement;
+      expect(iframe.name).toEqual('{"foo":1,"bar":"baz","baz":true}');
+    });
+
+    it("defaults properties in name to empty object if not passed", async () => {
+      const parent = new ParentComponent({
+        url: "https://example.com/child-frame",
+      });
+      const container = document.createElement("div");
+
+      await parent.render(container);
+
+      const iframe = container.querySelector("iframe") as HTMLIFrameElement;
+      expect(iframe.name).toEqual("{}");
     });
 
     it("resolves with the component instance once the child reports it is ready", async () => {

@@ -5,6 +5,12 @@ import { emit } from "framebus";
 jest.mock("framebus");
 jest.mock("../frame-base-component");
 
+function flushPromises() {
+  return new Promise((resolve) => {
+    setTimeout(resolve);
+  });
+}
+
 describe("ChildComponent", () => {
   it("initializes with a channel from the url hash", () => {
     const originalLocation = window.location;
@@ -31,59 +37,61 @@ describe("ChildComponent", () => {
     window.location = originalLocation;
   });
 
-  it("emits a child-ready event", () => {
+  it("emits a child-ready event", async () => {
     new ChildComponent({
       onCreate: jest.fn(),
     });
 
+    await flushPromises();
+
     expect(emit).toBeCalledTimes(1);
-    expect(emit).toBeCalledWith(
-      undefined,
-      "child-ready",
-      {},
-      expect.any(Function)
-    );
-  });
-
-  it("calls configured onCreate method with parent properties recieved from the child-ready event", () => {
-    jest.mocked(emit).mockImplementation((config, eventName, data, cb) => {
-      if (cb) {
-        cb({
-          properties: {
-            parentProperty: "foo",
-          },
-        });
-      }
-
-      return true;
-    });
-    const onCreate = jest.fn();
-
-    new ChildComponent({
-      onCreate,
-    });
-
-    expect(onCreate).toBeCalledTimes(1);
-    expect(onCreate).toBeCalledWith({
-      properties: {
-        parentProperty: "foo",
-      },
-    });
+    expect(emit).toBeCalledWith(undefined, "child-ready");
   });
 
   it("allows onCreate property to be optional", () => {
-    jest.mocked(emit).mockImplementation((config, eventName, data, cb) => {
-      if (cb) {
-        cb({
-          parentProperty: "foo",
-        });
-      }
-
-      return true;
-    });
-
     expect(() => {
       new ChildComponent({});
     }).not.toThrow();
+  });
+
+  it("passes parent props from the name to onCreate", () => {
+    const onCreateSpy = jest.fn();
+
+    window.name = '{"foo":"bar"}';
+
+    new ChildComponent({
+      onCreate: onCreateSpy,
+    });
+
+    expect(onCreateSpy).toBeCalledTimes(1);
+    expect(onCreateSpy).toBeCalledWith({
+      properties: { foo: "bar" },
+    });
+  });
+
+  it("waits for onCreate to resolve before emitting event", async () => {
+    let resolveHandler: (arg?: unknown) => void;
+
+    const onCreateSpy = jest.fn().mockImplementation(() => {
+      return new Promise((resolve) => {
+        resolveHandler = resolve;
+      });
+    });
+
+    new ChildComponent({
+      onCreate: onCreateSpy,
+    });
+
+    await flushPromises();
+
+    expect(emit).not.toBeCalled();
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    resolveHandler();
+
+    await flushPromises();
+
+    expect(emit).toBeCalledTimes(1);
   });
 });

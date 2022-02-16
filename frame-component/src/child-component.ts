@@ -11,34 +11,27 @@ export type ChildProps = Partial<FrameComponentProps> & {
 };
 
 export class ChildComponent extends FrameBaseComponent {
-  private properties: ChildProps;
-  private parentProps: ParentProperties = {};
-
   constructor(options: ChildProps) {
     super({
       channel: window.location.hash.slice(1, window.location.hash.length),
       methods: options.methods || [],
       hooks: options.hooks || {},
     });
+    const parentProps = JSON.parse(window.name || "{}");
 
-    this.properties = options;
-
-    this.handShake();
+    this.onCreate(options, parentProps);
   }
 
-  private handShake() {
-    emit(this.busConfig, "child-ready", {}, (payload) => {
-      this.parentProps = (payload as ParentProps)
-        .properties as ParentProperties;
-      this.onCreate();
-    });
-  }
-
-  private onCreate() {
-    if (typeof this.properties?.onCreate === "function") {
-      this.properties.onCreate({
-        properties: this.parentProps,
+  private async onCreate(
+    options: ChildProps,
+    parentProperties: ParentProperties
+  ) {
+    if (typeof options?.onCreate === "function") {
+      await options.onCreate({
+        properties: parentProperties,
       });
     }
+
+    emit(this.busConfig, "child-ready");
   }
 }
