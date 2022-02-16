@@ -1,5 +1,6 @@
 import { on } from "framebus";
 import uuid from "@braintree/uuid";
+import iFramer from "@braintree/iframer";
 import {
   FrameBaseComponent,
   FrameComponentProps,
@@ -27,9 +28,12 @@ export class ParentComponent extends FrameBaseComponent {
     // TODO iframe creation should be moved to helper private method
     // TODO iframe should have title
     // TODO should remove default iframe styling
-    this.iframe = document.createElement("iframe");
-    this.iframe.style.border = "0";
-    this.iframe.name = JSON.stringify(options.properties || {});
+    const iframeName = JSON.stringify(options.properties || {});
+
+    this.iframe = iFramer({
+      name: iframeName,
+      style: {}
+    }) 
   }
 
   async render(container: HTMLElement): Promise<this> {

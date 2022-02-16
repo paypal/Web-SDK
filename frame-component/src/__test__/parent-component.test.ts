@@ -1,11 +1,13 @@
 import { ParentComponent } from "../parent-component";
 import { FrameBaseComponent } from "../frame-base-component";
 import { on } from "framebus";
+import iFramer from "@braintree/iframer";
 import uuid from "@braintree/uuid";
 
 jest.mock("framebus");
 jest.mock("@braintree/uuid");
 jest.mock("../frame-base-component");
+jest.mock("@braintree/iframer");
 
 describe("ParentComponent", () => {
   beforeEach(() => {
@@ -27,6 +29,21 @@ describe("ParentComponent", () => {
       hooks: {},
     });
   });
+
+  it("removes default iframe styling", async () => {
+    const options = {
+      url: "https://example.com/child-frame",
+      properties: {
+        foo: "bar"
+      }
+    }
+    new ParentComponent(options)
+    const expectedIframeArgs = {
+      name: JSON.stringify(options.properties),
+      style: {}
+    }
+    expect(iFramer).toHaveBeenCalledWith(expectedIframeArgs);
+  }) 
 
   describe("render", () => {
     beforeEach(() => {
