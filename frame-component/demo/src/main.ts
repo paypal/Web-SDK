@@ -25,7 +25,13 @@ export const parentComponent = createParent({
   },
 });
 
-parentComponent.render(main);
+parentComponent.render(main).then(() => {
+  // TODO set this immediately when render resolves
+  // when child reports its ready
+  setTimeout(() => {
+    main.classList.add("ready");
+  }, 1000);
+});
 
 button.addEventListener("click", () => {
   parentComponent.methods.updateBackgroundColor(input.value);
