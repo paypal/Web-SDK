@@ -3,8 +3,11 @@ import { createParent } from "../../src";
 const input = document.getElementById(
   "background-color-choice"
 ) as HTMLInputElement;
-const button = document.getElementById(
+const submitBackgroundButton = document.getElementById(
   "background-color-submit"
+) as HTMLButtonElement;
+const getBackgroundButton = document.getElementById(
+  "background-color-get"
 ) as HTMLButtonElement;
 const messageContainer = document.getElementById(
   "message-from-iframe"
@@ -17,7 +20,7 @@ export const parentComponent = createParent({
   properties: {
     backgroundColor: "red",
   },
-  methods: ["updateBackgroundColor"],
+  methods: ["updateBackgroundColor", "getBackgroundColor"],
   hooks: {
     sendMessage(message: string) {
       messageContainer.innerText = message;
@@ -33,6 +36,12 @@ parentComponent.render(main).then(() => {
   }, 1000);
 });
 
-button.addEventListener("click", () => {
+submitBackgroundButton.addEventListener("click", () => {
   parentComponent.methods.updateBackgroundColor(input.value);
+});
+
+getBackgroundButton.addEventListener("click", () => {
+  parentComponent.methods.getBackgroundColor().then((result) => {
+    input.value = result as string;
+  });
 });

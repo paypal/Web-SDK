@@ -23,6 +23,9 @@ const childComponent = createChild({
     updateBackgroundColor(color: string) {
       app.style.backgroundColor = color;
     },
+    getBackgroundColor() {
+      return app.style.backgroundColor;
+    },
   },
 });
 
