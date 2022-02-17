@@ -1,4 +1,4 @@
-import { on } from "framebus";
+import { once } from "framebus";
 import uuid from "@braintree/uuid";
 import iFramer from "@braintree/iframer";
 import {
@@ -41,8 +41,7 @@ export class ParentComponent extends FrameBaseComponent {
 
   async render(container: HTMLElement): Promise<this> {
     return new Promise((resolve) => {
-      // TODO change to once method when available
-      on(this.busConfig, CHILD_READY_EVENT, () => {
+      once(this.busConfig, CHILD_READY_EVENT, () => {
         resolve(this);
       });
 

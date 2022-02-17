@@ -1,6 +1,6 @@
 import { ParentComponent } from "../parent-component";
 import { FrameBaseComponent } from "../frame-base-component";
-import { on } from "framebus";
+import { once } from "framebus";
 import iFramer from "@braintree/iframer";
 import uuid from "@braintree/uuid";
 import { CHILD_READY_EVENT } from "../internal-event-names";
@@ -59,7 +59,7 @@ describe("ParentComponent", () => {
 
   describe("render", () => {
     beforeEach(() => {
-      jest.mocked(on).mockImplementation((config, eventName, cb) => {
+      jest.mocked(once).mockImplementation((config, eventName, cb) => {
         if (cb) {
           // mocking the async nature of this action
           setTimeout(() => {
@@ -91,8 +91,8 @@ describe("ParentComponent", () => {
 
       const instance = await parent.render(container);
 
-      expect(on).toBeCalledTimes(1);
-      expect(on).toBeCalledWith(
+      expect(once).toBeCalledTimes(1);
+      expect(once).toBeCalledWith(
         undefined,
         CHILD_READY_EVENT,
         expect.any(Function)

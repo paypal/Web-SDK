@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@braintree/uuid": "^0.1.0",
-    "framebus": "^6.0.0-rc.2",
+    "framebus": "^6.0.0-rc.3",
     "@braintree/iframer": "^1.1.0"
   }
 }
