@@ -92,3 +92,24 @@ jobs:
         with:
           directory: ./coverage/jest
           flags: jest
+
+  frame-component-e2e-tests:
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: ⬇️  Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: "npm"
+
+      - name: 📥 Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: 🖼️ Run End to End tests for Frame Component
+        run: npm run --workspace=frame-componet demo & npm run --workspace=frame-component wdio
