@@ -183,3 +183,54 @@ messageButton.addEventListener("click", () => {
 Now when the parent calls `updateBackgroundColor` with a value, the child will update the backgroundColor of the element to the provided color. When the parent calls `getBackgroundColor`, it will resolve with the return value of the `getBackgroundColor` hook on the child.
 
 When the child calls, `sendMessage`, it will trigger the `sendMessage` hook on the parent.
+
+## How does it all work?
+
+This is essentially an abstraction around the [post message API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), (though this component uses [framebus](https://github.com/braintree/framebus), which is itself an abstraction around the post message API). When either component calls a method they have defined, it's actually sending a post message event to the corresponding component with the arguments from that method as a JSON string.
+
+For instance, this:
+
+```ts
+parentComponent.methods.updateBackgroundColor("red");
+```
+
+Is actually doing:
+
+```ts
+// where packMessage does some things to serialize the payload,
+// and target specifically the frame we are communicating with
+const message = packMessage({ args: ["red"] });
+window.postMessage(message, "*");
+```
+
+And the hook defintion for `updateBackgroundColor`:
+
+```ts
+createChild({
+  hooks: {
+    updateBackgroundColor(color) {
+      backgroundElement.style.backgroundColor = color;
+    },
+  },
+});
+```
+
+Is really doing something like:
+
+```ts
+window.addEventListener(
+  "message",
+  (event) => {
+    // where unpackMessage deserializes the data passed in the post
+    // message and checks that it was meant specifically for this iframe
+    const { hookName, args } = unpackMessage(event.data);
+
+    if (this.hooks[hookName]) {
+      this.hooks[hookName](...args);
+    }
+  },
+  false
+);
+```
+
+Admittedly, it's a little more complicated than that, but these examples should serve to give you a basic idea of _how_ it works.
