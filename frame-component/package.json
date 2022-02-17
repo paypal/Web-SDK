@@ -1,31 +1,28 @@
 {
-    "name": "frame-component",
-    "version": "0.0.1",
-    "description": "[WIP] One merchant integration point for all of PayPal's services",
-    "main": "index.js",
-    "private": true,
-    "scripts": {
-      "prettier": "prettier --write .",
-      "prettier:check": "prettier --check .",
-      "prebuild": "npm run prettier",
-      "build": "tsc --declaration",
-      "lint": "eslint .",
-      "test": "jest"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+ssh://git@github.com/paypal/Web-SDK.git"
-    },
-    "keywords": [
-      "paypal",
-      "braintree",
-      "payments"
-    ],
-    "author": "PayPal",
-    "license": "MIT",
-    "bugs": {
-      "url": "https://github.com/paypal/Web-SDK/issues"
-    },
-    "homepage": "https://github.com/paypal/Web-SDK#readme"
-  }
-  
+  "name": "frame-component",
+  "version": "0.0.1",
+  "description": "[WIP] One merchant integration point for all of PayPal's services",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "prebuild": "npm run prettier",
+    "build": "tsc --declaration",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/paypal/Web-SDK.git"
+  },
+  "keywords": [
+    "paypal",
+    "braintree",
+    "payments"
+  ],
+  "author": "PayPal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paypal/Web-SDK/issues"
+  },
+  "homepage": "https://github.com/paypal/Web-SDK#readme"
+}
