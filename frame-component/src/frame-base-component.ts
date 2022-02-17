@@ -2,6 +2,7 @@ import { initialize, FramebusConfig, on, emitAsPromise } from "framebus";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Hook = (...args: any[]) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Method = (...args: any[]) => Promise<unknown>;
 type Methods = {
   [key: string]: Method;
