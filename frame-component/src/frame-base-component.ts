@@ -16,7 +16,7 @@ type HookResponse = {
   result?: unknown;
 };
 
-export type FrameComponentProps = {
+export type FrameComponentOptions = {
   channel: string;
   methods: MethodNames;
   hooks: Hooks;
@@ -28,7 +28,7 @@ export abstract class FrameBaseComponent {
 
   methods: Methods = {};
 
-  constructor(options: FrameComponentProps) {
+  constructor(options: FrameComponentOptions) {
     this.channel = options.channel;
     this.busConfig = initialize({
       channel: this.channel,

@@ -1,17 +1,16 @@
-import type { ParentProps } from "./parent-component";
+import type { ParentProperties } from "./parent-component";
 import { emit } from "framebus";
 import {
   FrameBaseComponent,
-  FrameComponentProps,
+  FrameComponentOptions,
 } from "./frame-base-component";
 
-type ParentProperties = ParentProps["properties"];
-export type ChildProps = Partial<FrameComponentProps> & {
-  onCreate?: (props?: { properties: ParentProperties }) => void;
+export type ChildOptions = Partial<FrameComponentOptions> & {
+  onCreate?: (options: { properties: ParentProperties }) => void;
 };
 
 export class ChildComponent extends FrameBaseComponent {
-  constructor(options: ChildProps) {
+  constructor(options: ChildOptions) {
     super({
       channel: window.location.hash.slice(1, window.location.hash.length),
       methods: options.methods || [],
@@ -23,12 +22,12 @@ export class ChildComponent extends FrameBaseComponent {
   }
 
   private async onCreate(
-    options: ChildProps,
+    options: ChildOptions,
     parentProperties: ParentProperties
   ) {
     if (typeof options?.onCreate === "function") {
       await options.onCreate({
-        properties: parentProperties,
+        properties: parentProperties || {},
       });
     }
 

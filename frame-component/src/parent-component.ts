@@ -3,21 +3,22 @@ import uuid from "@braintree/uuid";
 import iFramer from "@braintree/iframer";
 import {
   FrameBaseComponent,
-  FrameComponentProps,
+  FrameComponentOptions,
 } from "./frame-base-component";
 
-export type ParentProps = Partial<FrameComponentProps> & {
+export type ParentProperties = {
+  [key: string]: unknown;
+};
+export type ParentOptions = Partial<FrameComponentOptions> & {
   url: string;
-  properties?: {
-    [key: string]: unknown;
-  };
+  properties?: ParentProperties;
 };
 
 export class ParentComponent extends FrameBaseComponent {
   url: string;
   private iframe: HTMLIFrameElement;
 
-  constructor(options: ParentProps) {
+  constructor(options: ParentOptions) {
     super({
       channel: uuid(),
       methods: options.methods || [],
