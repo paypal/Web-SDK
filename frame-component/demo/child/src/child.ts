@@ -11,7 +11,7 @@ const sendMessageInput = document.getElementById(
 
 function updateBackgroundColor(color: string) {
   app.style.backgroundColor = color;
-  colorChoice.innerText = color;
+  colorChoice.innerText = `Everything you see in this ${color} box is in an iframe.`;
 }
 
 const childComponent = createChild({
