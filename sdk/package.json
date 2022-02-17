@@ -5,9 +5,6 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "prettier": "prettier --write .",
-    "prettier:check": "prettier --check .",
-    "prebuild": "npm run prettier",
     "build": "tsc --declaration",
     "lint": "eslint .",
     "test": "jest"
