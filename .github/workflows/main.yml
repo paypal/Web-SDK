@@ -112,4 +112,4 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: 🖼️ Run End to End tests for Frame Component
-        run: npm run --workspace=frame-componet demo & npm run --workspace=frame-component wdio
+        run: npm run --workspace=frame-component demo & npm run --workspace=frame-component wdio
