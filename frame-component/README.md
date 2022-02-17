@@ -291,8 +291,10 @@ This will ensure that your iframe fits the container on the parent page.
 From the root the repo, run the following command:
 
 ```bash
-npm run dev --workspace=frame-component
+npm run demo --workspace=frame-component
 ```
+
+This will create 2 [vite](https://vitejs.dev/) apps, the parent page running on http://localhost:3000 and the child iframe running on http://localhost:3001.
 
 ## Running Tests
 

@@ -1,4 +1,4 @@
-import { createChild } from "../../src";
+import { createChild } from "../../../src";
 
 const app = document.getElementById("app") as HTMLDivElement;
 const colorChoice = document.getElementById("color-choice") as HTMLDivElement;

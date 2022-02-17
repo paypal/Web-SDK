@@ -1,4 +1,4 @@
-import { createParent } from "../../src";
+import { createParent } from "../../../src";
 
 const input = document.getElementById(
   "background-color-choice"
@@ -16,7 +16,7 @@ const messageContainer = document.getElementById(
 const main = document.getElementById("main") as HTMLElement;
 
 export const parentComponent = createParent({
-  url: "http://localhost:3000/child.html",
+  url: "http://localhost:3001",
   title: "Child Iframe",
   properties: {
     backgroundColor: "lightblue",
