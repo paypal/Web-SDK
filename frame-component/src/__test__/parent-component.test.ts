@@ -47,6 +47,12 @@ describe("ParentComponent", () => {
     expect(iFramer).toHaveBeenCalledWith({
       name: JSON.stringify(options.properties),
       title: "Iframe Title",
+      style: {
+        border: "none",
+        width: "100%",
+        height: "100%",
+        float: "left",
+      },
     });
   });
 
@@ -56,10 +62,12 @@ describe("ParentComponent", () => {
       title: "Iframe Title",
     });
 
-    expect(iFramer).toHaveBeenCalledWith({
-      name: "{}",
-      title: "Iframe Title",
-    });
+    expect(iFramer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "{}",
+        title: "Iframe Title",
+      })
+    );
   });
 
   it("creates an iframe with optional id", async () => {
@@ -74,11 +82,11 @@ describe("ParentComponent", () => {
 
     new ParentComponent(options);
 
-    expect(iFramer).toHaveBeenCalledWith({
-      name: JSON.stringify(options.properties),
-      id: "Custom ID",
-      title: "Iframe Title",
-    });
+    expect(iFramer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "Custom ID",
+      })
+    );
   });
 
   describe("render", () => {

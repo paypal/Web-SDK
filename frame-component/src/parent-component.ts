@@ -39,6 +39,12 @@ export class ParentComponent extends FrameBaseComponent {
       name: parentProperties,
       title: options.title,
       id: options.id,
+      style: {
+        border: "none",
+        width: "100%",
+        height: "100%",
+        float: "left",
+      },
     });
   }
 
