@@ -20,6 +20,8 @@
     "dev:asset-server": "npm start --workspace=asset-server",
     "dev:demo": "npm run dev --workspace=demo",
     "lint": "npm run lint --workspaces --if-present",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check .",
     "test": "npm run test --workspaces --if-present"
   },
   "keywords": [
