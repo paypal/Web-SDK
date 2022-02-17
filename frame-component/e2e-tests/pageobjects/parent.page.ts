@@ -18,6 +18,12 @@ class ParentPage extends Page {
     return $("#background-color-submit");
   }
 
+  public get inputBackgroundColorGet(): ChainablePromiseElement<
+    Promise<WebdriverIO.Element>
+  > {
+    return $("#background-color-get");
+  }
+
   public get messageElement(): ChainablePromiseElement<
     Promise<WebdriverIO.Element>
   > {
@@ -27,6 +33,20 @@ class ParentPage extends Page {
   public async changeBackground(color: string): Promise<void> {
     await this.inputBackgroundColorChoice.setValue(color);
     await this.inputBackgroundColorSubmit.click();
+  }
+
+  public async askForIframeBackground(): Promise<string> {
+    await this.inputBackgroundColorGet.click();
+
+    await browser.waitUntil(
+      async () => (await this.inputBackgroundColorChoice.getValue()) !== "",
+      {
+        timeout: 5000,
+        timeoutMsg: "Background color choice never populated as expected.",
+      }
+    );
+
+    return this.inputBackgroundColorChoice.getValue();
   }
 
   public async getMessage(): Promise<string> {

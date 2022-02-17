@@ -5,11 +5,14 @@ describe("Page with iframe on it", () => {
   it("can communicate from the parent to the child iframe", async () => {
     await ParentPage.open();
 
-    const originalBackgroundColor =
+    const iframeBackground = await ParentPage.askForIframeBackground();
+    expect(iframeBackground).toBe("lightblue");
+
+    const originalBackgroundColorAsCssProp =
       await IframePage.getCurrentBackgroundColor();
 
-    const red = "rgba(255,0,0,1)";
-    expect(originalBackgroundColor).toBe(red);
+    const lightblue = "rgba(173,216,230,1)";
+    expect(originalBackgroundColorAsCssProp).toBe(lightblue);
 
     await ParentPage.changeBackground("lavenderblush");
 

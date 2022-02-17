@@ -19,7 +19,7 @@ export const parentComponent = createParent({
   url: "http://localhost:3000/child.html",
   title: "Child Iframe",
   properties: {
-    backgroundColor: "red",
+    backgroundColor: "lightblue",
   },
   methods: ["updateBackgroundColor", "getBackgroundColor"],
   hooks: {
