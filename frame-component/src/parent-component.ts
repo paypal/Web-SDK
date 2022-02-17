@@ -13,6 +13,8 @@ export type ParentProperties = {
 export type ParentOptions = Partial<FrameComponentOptions> & {
   url: string;
   properties?: ParentProperties;
+  title: string;
+  id?: string;
 };
 
 export class ParentComponent extends FrameBaseComponent {
@@ -33,9 +35,10 @@ export class ParentComponent extends FrameBaseComponent {
     // where the child component can parse them right away
     const parentProperties = JSON.stringify(options.properties || {});
 
-    // TODO should be able to configure title and id in props
     this.iframe = iFramer({
       name: parentProperties,
+      title: options.title,
+      id: options.id,
     });
   }
 

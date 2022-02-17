@@ -19,6 +19,7 @@ describe("ParentComponent", () => {
   it("should create channel with unique id", () => {
     new ParentComponent({
       url: "https://example.com/child-frame",
+      title: "Iframe Title",
       properties: {
         foo: "bar",
       },
@@ -35,6 +36,7 @@ describe("ParentComponent", () => {
   it("creates an iframe with properties embedded in the name", async () => {
     const options = {
       url: "https://example.com/child-frame",
+      title: "Iframe Title",
       properties: {
         foo: "bar",
       },
@@ -44,16 +46,38 @@ describe("ParentComponent", () => {
 
     expect(iFramer).toHaveBeenCalledWith({
       name: JSON.stringify(options.properties),
+      title: "Iframe Title",
     });
   });
 
   it("defaults properties in name to empty object if none are passed", async () => {
     new ParentComponent({
       url: "https://example.com/child-frame",
+      title: "Iframe Title",
     });
 
     expect(iFramer).toHaveBeenCalledWith({
       name: "{}",
+      title: "Iframe Title",
+    });
+  });
+
+  it("creates an iframe with optional id", async () => {
+    const options = {
+      url: "https://example.com/child-frame",
+      id: "Custom ID",
+      title: "Iframe Title",
+      properties: {
+        foo: "bar",
+      },
+    };
+
+    new ParentComponent(options);
+
+    expect(iFramer).toHaveBeenCalledWith({
+      name: JSON.stringify(options.properties),
+      id: "Custom ID",
+      title: "Iframe Title",
     });
   });
 
@@ -74,6 +98,7 @@ describe("ParentComponent", () => {
     it("inserts the iframe element into the provided DOM node", async () => {
       const parent = new ParentComponent({
         url: "https://example.com/child-frame",
+        title: "Iframe Title",
       });
       const container = document.createElement("div");
 
@@ -86,6 +111,7 @@ describe("ParentComponent", () => {
     it("resolves with the component instance once the child reports it is ready", async () => {
       const parent = new ParentComponent({
         url: "https://example.com/child-frame",
+        title: "Iframe Title",
       });
       const container = document.createElement("div");
 

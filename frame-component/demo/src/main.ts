@@ -17,6 +17,7 @@ const main = document.getElementById("main") as HTMLElement;
 
 export const parentComponent = createParent({
   url: "http://localhost:3000/child.html",
+  title: "Child Iframe",
   properties: {
     backgroundColor: "red",
   },
