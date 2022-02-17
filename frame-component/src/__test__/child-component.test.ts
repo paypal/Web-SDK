@@ -24,9 +24,7 @@ describe("ChildComponent", () => {
       hash: "#unique-id",
     };
 
-    new ChildComponent({
-      onCreate: jest.fn(),
-    });
+    new ChildComponent();
 
     expect(FrameBaseComponent).toBeCalledTimes(1);
     expect(FrameBaseComponent).toBeCalledWith({
@@ -39,20 +37,12 @@ describe("ChildComponent", () => {
   });
 
   it("emits a child ready event", async () => {
-    new ChildComponent({
-      onCreate: jest.fn(),
-    });
+    new ChildComponent();
 
     await flushPromises();
 
     expect(emit).toBeCalledTimes(1);
     expect(emit).toBeCalledWith(undefined, CHILD_READY_EVENT);
-  });
-
-  it("allows onCreate property to be optional", () => {
-    expect(() => {
-      new ChildComponent({});
-    }).not.toThrow();
   });
 
   it("passes parent props from the name to onCreate", () => {

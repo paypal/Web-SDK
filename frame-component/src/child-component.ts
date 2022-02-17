@@ -11,7 +11,7 @@ export type ChildOptions = Partial<FrameComponentOptions> & {
 };
 
 export class ChildComponent extends FrameBaseComponent {
-  constructor(options: ChildOptions) {
+  constructor(options: ChildOptions = {}) {
     super({
       channel: window.location.hash.slice(1, window.location.hash.length),
       methods: options.methods || [],
@@ -26,9 +26,9 @@ export class ChildComponent extends FrameBaseComponent {
     options: ChildOptions,
     parentProperties: ParentProperties
   ) {
-    if (typeof options?.onCreate === "function") {
+    if (typeof options.onCreate === "function") {
       await options.onCreate({
-        properties: parentProperties || {},
+        properties: parentProperties,
       });
     }
 
