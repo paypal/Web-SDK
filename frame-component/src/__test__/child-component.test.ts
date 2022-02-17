@@ -1,6 +1,7 @@
 import { ChildComponent } from "../child-component";
 import { FrameBaseComponent } from "../frame-base-component";
 import { emit } from "framebus";
+import { CHILD_READY_EVENT } from "../internal-event-names";
 
 jest.mock("framebus");
 jest.mock("../frame-base-component");
@@ -37,7 +38,7 @@ describe("ChildComponent", () => {
     window.location = originalLocation;
   });
 
-  it("emits a child-ready event", async () => {
+  it("emits a child ready event", async () => {
     new ChildComponent({
       onCreate: jest.fn(),
     });
@@ -45,7 +46,7 @@ describe("ChildComponent", () => {
     await flushPromises();
 
     expect(emit).toBeCalledTimes(1);
-    expect(emit).toBeCalledWith(undefined, "child-ready");
+    expect(emit).toBeCalledWith(undefined, CHILD_READY_EVENT);
   });
 
   it("allows onCreate property to be optional", () => {

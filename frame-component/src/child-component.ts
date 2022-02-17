@@ -4,6 +4,7 @@ import {
   FrameBaseComponent,
   FrameComponentOptions,
 } from "./frame-base-component";
+import { CHILD_READY_EVENT } from "./internal-event-names";
 
 export type ChildOptions = Partial<FrameComponentOptions> & {
   onCreate?: (options: { properties: ParentProperties }) => void;
@@ -31,6 +32,6 @@ export class ChildComponent extends FrameBaseComponent {
       });
     }
 
-    emit(this.busConfig, "child-ready");
+    emit(this.busConfig, CHILD_READY_EVENT);
   }
 }

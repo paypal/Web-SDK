@@ -3,6 +3,7 @@ import { FrameBaseComponent } from "../frame-base-component";
 import { on } from "framebus";
 import iFramer from "@braintree/iframer";
 import uuid from "@braintree/uuid";
+import { CHILD_READY_EVENT } from "../internal-event-names";
 
 jest.mock("framebus");
 jest.mock("@braintree/uuid");
@@ -91,6 +92,11 @@ describe("ParentComponent", () => {
       const instance = await parent.render(container);
 
       expect(on).toBeCalledTimes(1);
+      expect(on).toBeCalledWith(
+        undefined,
+        CHILD_READY_EVENT,
+        expect.any(Function)
+      );
 
       expect(instance).toBe(parent);
     });

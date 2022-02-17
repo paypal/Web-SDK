@@ -5,6 +5,7 @@ import {
   FrameBaseComponent,
   FrameComponentOptions,
 } from "./frame-base-component";
+import { CHILD_READY_EVENT } from "./internal-event-names";
 
 export type ParentProperties = {
   [key: string]: unknown;
@@ -40,9 +41,8 @@ export class ParentComponent extends FrameBaseComponent {
 
   async render(container: HTMLElement): Promise<this> {
     return new Promise((resolve) => {
-      // TODO move event-name to constant
       // TODO change to once method when available
-      on(this.busConfig, "child-ready", () => {
+      on(this.busConfig, CHILD_READY_EVENT, () => {
         resolve(this);
       });
 
