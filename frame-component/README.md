@@ -234,3 +234,76 @@ window.addEventListener(
 ```
 
 Admittedly, it's a little more complicated than that, but these examples should serve to give you a basic idea of _how_ it works.
+
+## Caveats
+
+### XSS Vulnerability
+
+This module does no sanitization of the arguments passed to hooks and methods. Be careful how you use the values provided in them. For instance, a hook like this:
+
+```ts
+createChild({
+  hooks: {
+    updateColor(color) {
+      someDomNode.innerHTML = `
+<div class="bg-${color}">
+  <!-- other UI stuff -->
+</div>
+`;
+    },
+  },
+});
+```
+
+Would open you up to JavaScript being executed on the page like:
+
+```ts
+parentComponent.updateColor(
+  `red"><script>alert(window.location.href)</script><div class="foo`
+);
+```
+
+### Parent Container
+
+The iframe will fit to the height and width of the parent container, so make sure these are set in some way.
+
+### Recomended Styles for Child
+
+For best results, include these styles on your child page:
+
+```css
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body,
+html {
+  height: 100%;
+  background-color: transparent;
+}
+```
+
+This will ensure that your iframe fits the container on the parent page.
+
+## Run the Demo App
+
+From the root the repo, run the following command:
+
+```bash
+npm run dev --workspace=frame-component
+```
+
+## Running Tests
+
+From the root of the repo, run the following for unit tests:
+
+```bash
+npm t --workspace=frame-component
+```
+
+From the root of the repo, run the following for e2e tests (the test app must be running for the tests to start):
+
+```bash
+npm run --workspace=frame-component wdio
+```
