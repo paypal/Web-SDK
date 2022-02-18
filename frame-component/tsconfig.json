@@ -9,6 +9,6 @@
     "strict": true,
     "rootDirs": ["src", "demo"]
   },
-  "include": ["./src/**/*", "./demo/src"],
+  "include": ["./src/**/*", "./demo/**/*"],
   "exclude": ["./**/__test__/*"]
 }
