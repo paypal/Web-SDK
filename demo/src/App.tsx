@@ -1,35 +1,43 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Nav } from "./components/Nav";
-import { Home } from "./pages/Home";
-import { FrameComponentDemo } from "./pages/Frame-Component-Demo";
-import { NotFound } from "./pages/NotFound";
+// import { Logo } from './logo'
+import { createParent } from "frame-component/src";
+import { useRef, useEffect } from "preact/hooks";
 
-import "./App.css";
-
-const OtherPage = () => {
-  // temp page for routing tests
-  return <div>other page</div>;
-};
-
-function App() {
-  return (
-    <div className="app">
-      <BrowserRouter>
-        <Nav />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/frame-component-demo"
-              element={<FrameComponentDemo />}
-            />
-            <Route path="/other-page" element={<OtherPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-      </BrowserRouter>
-    </div>
-  );
+export function loadMySpecialComponent(container: HTMLElement) {
+  createParent({
+    url: "http://localhost:9001/v1/child/",
+    title: "some title",
+    properties: {
+      text: "</div><script>alert('hey')</script><div>",
+    },
+  })
+    .render(container)
+    .then(() => {
+      console.log("I did resolve");
+    });
 }
 
-export default App;
+export function App() {
+  const container = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    loadMySpecialComponent(container.current as HTMLDivElement);
+  }, []);
+
+  return (
+    <>
+      <div>Logo would go here</div>
+      <p>Hello Vite + Preact!</p>
+      <p>
+        <a
+          class="link"
+          href="https://preactjs.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn Preact
+        </a>
+      </p>
+      <div id="container" ref={container}></div>
+    </>
+  );
+}

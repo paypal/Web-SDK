@@ -1,5 +1,7 @@
 import type { ParentProperties } from "./parent-component";
 import { emit } from "framebus";
+import type { ComponentChild } from "preact";
+import { useEffect } from "preact/hooks";
 import {
   FrameBaseComponent,
   FrameComponentOptions,
@@ -7,31 +9,36 @@ import {
 import { CHILD_READY_EVENT } from "./internal-event-names";
 
 export type ChildOptions = Partial<FrameComponentOptions> & {
-  onCreate?: (options: { properties: ParentProperties }) => void;
+  render: (options: { properties: ParentProperties }) => any;
 };
 
 export class ChildComponent extends FrameBaseComponent {
-  constructor(options: ChildOptions = {}) {
+  parentProps: ParentProperties;
+  configuredRender: ChildOptions["render"];
+
+  constructor(options: ChildOptions) {
     super({
       channel: window.location.hash.slice(1, window.location.hash.length),
       methods: options.methods || [],
       hooks: options.hooks || {},
     });
-    const parentProps = JSON.parse(window.name || "{}");
-
-    this.onCreate(options, parentProps);
+    this.parentProps = JSON.parse(window.name || "{}");
+    this.configuredRender = options.render;
   }
 
-  private async onCreate(
-    options: ChildOptions,
-    parentProperties: ParentProperties
-  ) {
-    if (typeof options.onCreate === "function") {
-      await options.onCreate({
-        properties: parentProperties,
+  render() {
+    return () => {
+      useEffect(() => {
+        emit(this.busConfig, CHILD_READY_EVENT);
+      }, []);
+      return this.configuredRender({
+        properties: this.parentProps,
       });
-    }
+    };
 
-    emit(this.busConfig, CHILD_READY_EVENT);
+    // return () => {
+    //   console.log("rendering");
+    //   return Container;
+    // };
   }
 }

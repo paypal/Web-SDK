@@ -13,6 +13,93 @@ First, create an HTML page where your component will be rendered.
 Next, create the parent component and render it. This will insert an iframe into the page with the `src` of the `url` you used to configure the parent. Render will resolve when the child component has fully set up and resolves with the instance of the parent component.
 
 ```ts
+import { BaseClass } from "./base-class";
+
+function createComponents(parentConfig, childConfig) {
+  const parent = createParent(parentConfig);
+
+  const child = createChild(parentConfig);
+  return {
+    parent,
+    child,
+  };
+}
+
+function createComponet(config) {
+  class Parent extends BaseClass {
+    // set up parent class with config
+  }
+  class Child extends BaseClass {
+    // set up child class with config
+  }
+
+  return {
+    Parent,
+    Child,
+  };
+}
+```
+
+```ts
+// define the component
+import { createComponent } from "frame-component";
+
+export const MyComponent = createComponent({
+  url: "https://www.example.com/location-of-child-component",
+  parentMethods: {
+    foo() {
+      console.log("foo");
+    },
+  },
+  childMethods: {
+    bar() {
+      console.log("bar");
+    },
+  },
+});
+
+// on the parent page
+import { MyComponent } from "./component-definition";
+
+const component = await MyComponent({
+  properties: {
+    backgroundColor: "red",
+  },
+}).render(document.getElementById("#container"));
+
+someButton.addEventListener("click", () => {
+  component.methods.foo(); // should trigger the child to log 'foo'
+  component.methods.bar; // should not exist
+});
+
+// on the child page
+import { MyComponent } from "./component-definition";
+
+// TODO what here?
+const component = MyComponent({
+  onCreate({ properties }) {
+    // fill in props
+  },
+});
+
+component.methods.bar(); // should log 'bar' on the parent
+component.methods.foo; // should not exist
+```
+
+```ts
+// this is probably confusing and we don't want to do it at all :/
+import { FrameComponent } from "frame-component";
+
+class MyComponent extends FrameComponent {
+  constructor(options) {
+    super(options);
+
+    // other stuff
+  }
+}
+```
+
+```ts
 // create parent component on the parent page
 import { createParent } from "frame-component";
 
@@ -58,10 +145,25 @@ const backgroundElement = document.getElementById(
 ) as HTMLDivElement;
 
 const childComponent = createChild({
-  onCreate({ properties }) {
-    // run any code that must be run after the component has finished setting up
-    // such as applying any properties that the parent has configured
-    backgroundElement.style.backgroundColor = properties.backgroundColor;
+  render({ properties }) {
+    const container = document.createElement("div");
+    container.innerHTML = `
+<div class="section">
+  <h1>Frame Child Component</h1>
+</div>
+
+<p class="section" id="color-choice" aria-live="true">
+  Everything you see in this white box is in an iframe.
+</p>
+
+<div class="section">
+  <input id="send-message-input" type="text" placeholder="message here" />
+  <button id="send-message-button">Send Message</button>
+</div>
+`;
+    container.style.backgroundColor = properties.backgroundColor;
+
+    return container;
   },
 });
 ```
