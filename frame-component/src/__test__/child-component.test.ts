@@ -2,6 +2,7 @@ import { ChildComponent } from "../child-component";
 import { FrameBaseComponent } from "../frame-base-component";
 import { emit } from "framebus";
 import { CHILD_READY_EVENT } from "../internal-event-names";
+import { mount } from "enzyme"
 
 jest.mock("framebus");
 jest.mock("../frame-base-component");
@@ -36,8 +37,8 @@ describe("ChildComponent", () => {
     window.location = originalLocation;
   });
 
-  it("emits a child ready event", async () => {
-    new ChildComponent({ render: jest.fn() });
+  it.only("emits a child ready event", async () => {
+    const wrapper = mount(new ChildComponent({ render: jest.fn() }));
 
     await flushPromises();
 
