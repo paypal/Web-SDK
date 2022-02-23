@@ -2,10 +2,11 @@ import { ChildComponent } from "../child-component";
 import { FrameBaseComponent } from "../frame-base-component";
 import { emit } from "framebus";
 import { CHILD_READY_EVENT } from "../internal-event-names";
-import { mount } from "enzyme"
+import { useEffect } from "preact/hooks";
 
 jest.mock("framebus");
 jest.mock("../frame-base-component");
+jest.mock("preact/hooks");
 
 function flushPromises() {
   return new Promise((resolve) => {
@@ -37,53 +38,51 @@ describe("ChildComponent", () => {
     window.location = originalLocation;
   });
 
-  it.only("emits a child ready event", async () => {
-    const wrapper = mount(new ChildComponent({ render: jest.fn() }));
+  describe("render", () => {
+    it("returns a render function that calls the render callback", () => {
+      const renderSpy = jest.fn();
+      const child = new ChildComponent({ render: renderSpy });
 
-    await flushPromises();
+      const renderCallback = child.render();
 
-    expect(emit).toBeCalledTimes(1);
-    expect(emit).toBeCalledWith(undefined, CHILD_READY_EVENT);
-  });
+      expect(renderSpy).not.toBeCalled();
 
-  it("passes parent props from the name to onCreate", () => {
-    const onCreateSpy = jest.fn();
+      renderCallback();
 
-    window.name = '{"foo":"bar"}';
-
-    new ChildComponent({
-      render: onCreateSpy,
+      expect(renderSpy).toBeCalledTimes(1);
     });
 
-    expect(onCreateSpy).toBeCalledTimes(1);
-    expect(onCreateSpy).toBeCalledWith({
-      properties: { foo: "bar" },
-    });
-  });
+    it("calls render hook with parent properties", () => {
+      window.name = '{"foo":"bar"}';
 
-  it("waits for onCreate to resolve before emitting event", async () => {
-    let resolveHandler: (arg?: unknown) => void;
+      const renderSpy = jest.fn();
+      const child = new ChildComponent({ render: renderSpy });
 
-    const onCreateSpy = jest.fn().mockImplementation(() => {
-      return new Promise((resolve) => {
-        resolveHandler = resolve;
+      child.render()();
+
+      expect(renderSpy).toBeCalledTimes(1);
+      expect(renderSpy).toBeCalledWith({
+        properties: {
+          foo: "bar",
+        },
       });
     });
 
-    new ChildComponent({
-      render: onCreateSpy,
+    it("emits a child ready event when use effect fires (indicating it has rendered for the first time)", async () => {
+      const child = new ChildComponent({ render: jest.fn() });
+
+      const renderCallback = child.render();
+
+      renderCallback();
+
+      expect(emit).not.toBeCalled();
+
+      const useEffectCb = jest.mocked(useEffect).mock.calls[0][0];
+
+      useEffectCb();
+
+      expect(emit).toBeCalledTimes(1);
+      expect(emit).toBeCalledWith(undefined, CHILD_READY_EVENT);
     });
-
-    await flushPromises();
-
-    expect(emit).not.toBeCalled();
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    resolveHandler();
-
-    await flushPromises();
-
-    expect(emit).toBeCalledTimes(1);
   });
 });
