@@ -22,11 +22,10 @@ export const parentComponent = createParent({
     backgroundColor: "lightblue",
   },
   methods: ["updateBackgroundColor", "getBackgroundColor"],
-  hooks: {
-    sendMessage(message: string) {
-      messageContainer.innerText = message;
-    },
-  },
+});
+
+parentComponent.defineHook("sendMessage", (message: string) => {
+  messageContainer.innerText = message;
 });
 
 parentComponent.render(main).then(() => {

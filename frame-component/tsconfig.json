@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "jsx": "react",
+    "jsxImportSource": "preact",
     "allowJs": false,
     "esModuleInterop": true,
     "outDir": "./dist",

@@ -1,7 +1,7 @@
 import type { ParentProperties } from "./parent-component";
-import { emit } from "framebus";
+import { on, emit, off } from "framebus";
 import { useEffect } from "preact/hooks";
-import type { FunctionComponent } from "preact";
+import type { VNode } from "preact";
 import {
   FrameBaseComponent,
   FrameComponentOptions,
@@ -9,7 +9,7 @@ import {
 import { CHILD_READY_EVENT } from "./internal-event-names";
 
 export type ChildOptions = Partial<FrameComponentOptions> & {
-  render: (options: { properties: ParentProperties }) => FunctionComponent;
+  render: (options: { properties: ParentProperties }) => VNode;
 };
 
 export class ChildComponent extends FrameBaseComponent {
@@ -31,7 +31,6 @@ export class ChildComponent extends FrameBaseComponent {
       useEffect(() => {
         emit(this.busConfig, CHILD_READY_EVENT);
       }, []);
-
       return this.configuredRender({
         properties: this.parentProps,
       });

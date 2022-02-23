@@ -1,4 +1,4 @@
-import { initialize, FramebusConfig, on, emitAsPromise } from "framebus";
+import { initialize, FramebusConfig, on, off, emitAsPromise } from "framebus";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Hook = (...args: any[]) => void;
@@ -25,6 +25,7 @@ export type FrameComponentOptions = {
 export abstract class FrameBaseComponent {
   protected busConfig: FramebusConfig;
   protected channel: string;
+  private definedHooks: Record<string, Parameters<typeof on>[2]> = {};
 
   methods: Methods = {};
 
@@ -45,7 +46,20 @@ export abstract class FrameBaseComponent {
     }
 
     this.setMethods(options.methods);
-    this.setHooks(options.hooks);
+  }
+
+  defineHook(methodName: string, hook: Hook) {
+    const eventName = `trigger-method-${methodName}`;
+
+    if (this.definedHooks[methodName]) {
+      off(this.busConfig, eventName, this.definedHooks[methodName]);
+    }
+
+    const cb = this.createHookCallback(hook);
+
+    this.definedHooks[methodName] = cb;
+
+    on(this.busConfig, eventName, cb);
   }
 
   private setMethods(methods: MethodNames) {
@@ -87,7 +101,7 @@ export abstract class FrameBaseComponent {
     }
   }
 
-  private createHookCallback(hook: Hook): Parameters<typeof on>[2] {
+  protected createHookCallback(hook: Hook): Parameters<typeof on>[2] {
     return async (data, reply) => {
       const args = data.args as unknown[];
 

@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "demo": "run-p demo:*",
-    "demo:parent-page": "vite --port 3000 serve demo/parent",
-    "demo:child-page": "vite --port 3001 serve demo/child",
+    "demo:parent-page": "vite --config demo/parent/vite.config.ts serve demo/parent",
+    "demo:child-page": "vite --config demo/child/vite.config.ts serve demo/child",
     "build": "tsc --declaration",
     "lint": "eslint .",
     "test": "jest",
