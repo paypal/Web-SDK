@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { FrameBaseComponent } from "../frame-base-component";
-import { on, emitAsPromise, initialize, FramebusConfig } from "framebus";
+import { on, off, emitAsPromise, initialize, FramebusConfig } from "framebus";
 
 jest.mock("framebus");
 
@@ -102,18 +102,22 @@ describe("FrameBaseComponent", () => {
     });
   });
 
-  it("creates listener for each hook defined", () => {
+  it("creates listener for each hook", () => {
     const fooSpy = jest.fn();
     const barSpy = jest.fn();
 
-    new SubComponent({
+    const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
+      // TODO: remove the hooks as a param since no longer applying this paradigm
       hooks: {
         foo: fooSpy,
         bar: barSpy,
       },
     });
+
+    component.defineHook("foo", fooSpy)
+    component.defineHook("bar", barSpy)
 
     expect(on).toBeCalledTimes(2);
     expect(on).toBeCalledWith(
@@ -156,11 +160,35 @@ describe("FrameBaseComponent", () => {
     expect(barSpy).toBeCalledWith("foo", "bar", "baz");
   });
 
+  it("removes the listener if it already exists", () => {
+    const fooSpy = jest.fn();
+
+    const component = new SubComponent({
+      channel: "custom-channel",
+      methods: [],
+      // TODO: remove the hooks as a param since no longer applying this paradigm
+      hooks: {
+        foo: fooSpy,
+      },
+    });
+
+    component.defineHook("foo", fooSpy)
+    component.defineHook("foo", fooSpy)
+
+    expect(on).toBeCalledTimes(2);
+    expect(off).toBeCalledTimes(1);
+    expect(off).toBeCalledWith(
+      fakeConfig,
+      "trigger-method-foo",
+      expect.any(Function)
+    );
+  })
+
   it("replies with a result object with whatever the hook resolves with", async () => {
     const fooSpy = jest.fn().mockResolvedValue("foo");
     const barSpy = jest.fn().mockReturnValue("bar");
 
-    new SubComponent({
+    const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {
@@ -168,6 +196,9 @@ describe("FrameBaseComponent", () => {
         bar: barSpy,
       },
     });
+
+    component.defineHook("foo", fooSpy)
+    component.defineHook("bar", barSpy)
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === "trigger-method-foo";
@@ -211,7 +242,7 @@ describe("FrameBaseComponent", () => {
       throw new Error("some other error");
     });
 
-    new SubComponent({
+    const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {
@@ -219,6 +250,9 @@ describe("FrameBaseComponent", () => {
         bar: barSpy,
       },
     });
+
+    component.defineHook("foo", fooSpy)
+    component.defineHook("bar", barSpy)
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === "trigger-method-foo";
@@ -264,7 +298,7 @@ describe("FrameBaseComponent", () => {
       throw { message: "not some other error" };
     });
 
-    new SubComponent({
+    const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
       hooks: {
@@ -272,6 +306,9 @@ describe("FrameBaseComponent", () => {
         bar: barSpy,
       },
     });
+
+    component.defineHook("foo", fooSpy)
+    component.defineHook("bar", barSpy)
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === "trigger-method-foo";
