@@ -1,6 +1,5 @@
 import type { ParentProperties } from "./parent-component";
 import { emit } from "framebus";
-import type { ComponentChild } from "preact";
 import { useEffect } from "preact/hooks";
 import {
   FrameBaseComponent,
@@ -35,10 +34,5 @@ export class ChildComponent extends FrameBaseComponent {
         properties: this.parentProps,
       });
     };
-
-    // return () => {
-    //   console.log("rendering");
-    //   return Container;
-    // };
   }
 }

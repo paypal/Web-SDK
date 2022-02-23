@@ -24,7 +24,7 @@ describe("ChildComponent", () => {
       hash: "#unique-id",
     };
 
-    new ChildComponent();
+    new ChildComponent({ render: jest.fn() });
 
     expect(FrameBaseComponent).toBeCalledTimes(1);
     expect(FrameBaseComponent).toBeCalledWith({
@@ -37,7 +37,7 @@ describe("ChildComponent", () => {
   });
 
   it("emits a child ready event", async () => {
-    new ChildComponent();
+    new ChildComponent({ render: jest.fn() });
 
     await flushPromises();
 
@@ -51,7 +51,7 @@ describe("ChildComponent", () => {
     window.name = '{"foo":"bar"}';
 
     new ChildComponent({
-      onCreate: onCreateSpy,
+      render: onCreateSpy,
     });
 
     expect(onCreateSpy).toBeCalledTimes(1);
@@ -70,7 +70,7 @@ describe("ChildComponent", () => {
     });
 
     new ChildComponent({
-      onCreate: onCreateSpy,
+      render: onCreateSpy,
     });
 
     await flushPromises();

@@ -14,7 +14,7 @@ describe("FrameComponent", () => {
     });
 
     it("returns a child component", () => {
-      const childComponent = createChild({});
+      const childComponent = createChild({ render: jest.fn() });
 
       expect(childComponent).toBeInstanceOf(ChildComponent);
     });
