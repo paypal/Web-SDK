@@ -106,8 +106,8 @@ describe("FrameBaseComponent", () => {
       methods: [],
     });
 
-    component.defineHook("foo", fooSpy)
-    component.defineHook("bar", barSpy)
+    component.defineHook("foo", fooSpy);
+    component.defineHook("bar", barSpy);
 
     expect(on).toBeCalledTimes(2);
     expect(on).toBeCalledWith(
@@ -158,8 +158,8 @@ describe("FrameBaseComponent", () => {
       methods: [],
     });
 
-    component.defineHook("foo", fooSpy)
-    component.defineHook("foo", fooSpy)
+    component.defineHook("foo", fooSpy);
+    component.defineHook("foo", fooSpy);
 
     expect(on).toBeCalledTimes(2);
     expect(off).toBeCalledTimes(1);
@@ -168,7 +168,7 @@ describe("FrameBaseComponent", () => {
       "trigger-method-foo",
       expect.any(Function)
     );
-  })
+  });
 
   it("replies with a result object with whatever the hook resolves with", async () => {
     const fooSpy = jest.fn().mockResolvedValue("foo");
@@ -179,8 +179,8 @@ describe("FrameBaseComponent", () => {
       methods: [],
     });
 
-    component.defineHook("foo", fooSpy)
-    component.defineHook("bar", barSpy)
+    component.defineHook("foo", fooSpy);
+    component.defineHook("bar", barSpy);
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === "trigger-method-foo";
@@ -229,8 +229,8 @@ describe("FrameBaseComponent", () => {
       methods: [],
     });
 
-    component.defineHook("foo", fooSpy)
-    component.defineHook("bar", barSpy)
+    component.defineHook("foo", fooSpy);
+    component.defineHook("bar", barSpy);
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === "trigger-method-foo";
@@ -281,8 +281,8 @@ describe("FrameBaseComponent", () => {
       methods: [],
     });
 
-    component.defineHook("foo", fooSpy)
-    component.defineHook("bar", barSpy)
+    component.defineHook("foo", fooSpy);
+    component.defineHook("bar", barSpy);
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === "trigger-method-foo";

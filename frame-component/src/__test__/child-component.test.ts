@@ -8,12 +8,6 @@ jest.mock("framebus");
 jest.mock("../frame-base-component");
 jest.mock("preact/hooks");
 
-function flushPromises() {
-  return new Promise((resolve) => {
-    setTimeout(resolve);
-  });
-}
-
 describe("ChildComponent", () => {
   it("initializes with a channel from the url hash", () => {
     const originalLocation = window.location;
