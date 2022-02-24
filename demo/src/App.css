@@ -1,0 +1,46 @@
+:root {
+  --main-bg-color: #fafafa;
+  --main-text-color: #121212;
+  --nav-bg-color: var(--main-text-color);
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
+nav {
+  width: 30%;
+  min-width: 280px;
+  background: var(--nav-bg-color);
+  color: white;
+  padding: 15px 0;
+}
+
+nav a {
+  color: #fafafa;
+  text-decoration: none;
+  display: inline-block;
+  padding: 5px 10px;
+  width: 100%;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul a.active {
+  color: var(--main-text-color);
+  font-weight: 600;
+  background: #fafafa;
+}
+
+main {
+  background: var(--main-bg-color);
+  color: var(--main-text-color);
+  height: 100%;
+  width: 70%;
+  padding: 20px;
+}
