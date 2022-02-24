@@ -8,8 +8,7 @@
     "asset-server",
     "demo",
     "frame-component",
-    "sdk",
-    "ui-components"
+    "sdk"
   ],
   "repository": {
     "type": "git",
