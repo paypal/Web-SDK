@@ -27,7 +27,7 @@ const childComponent = createChild({
     }
 
     return (
-      <div className="container" style={{ backgroundColor }}>
+      <div id="app" style={{ backgroundColor }}>
         <div className="section">
           <h1>Frame Child Component</h1>
         </div>
@@ -56,4 +56,4 @@ const childComponent = createChild({
 
 const App = childComponent.render();
 
-render(<App />, document.getElementById("app") as HTMLDivElement);
+render(<App />, document.body);

@@ -9,7 +9,7 @@ class IframePage extends Page {
   public get backgroundElement(): ChainablePromiseElement<
     Promise<WebdriverIO.Element>
   > {
-    return $(".container");
+    return $("#app");
   }
 
   public get sendMessageInput(): ChainablePromiseElement<
