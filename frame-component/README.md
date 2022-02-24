@@ -13,93 +13,6 @@ First, create an HTML page where your component will be rendered.
 Next, create the parent component and render it. This will insert an iframe into the page with the `src` of the `url` you used to configure the parent. Render will resolve when the child component has fully set up and resolves with the instance of the parent component.
 
 ```ts
-import { BaseClass } from "./base-class";
-
-function createComponents(parentConfig, childConfig) {
-  const parent = createParent(parentConfig);
-
-  const child = createChild(parentConfig);
-  return {
-    parent,
-    child,
-  };
-}
-
-function createComponet(config) {
-  class Parent extends BaseClass {
-    // set up parent class with config
-  }
-  class Child extends BaseClass {
-    // set up child class with config
-  }
-
-  return {
-    Parent,
-    Child,
-  };
-}
-```
-
-```ts
-// define the component
-import { createComponent } from "frame-component";
-
-export const MyComponent = createComponent({
-  url: "https://www.example.com/location-of-child-component",
-  parentMethods: {
-    foo() {
-      console.log("foo");
-    },
-  },
-  childMethods: {
-    bar() {
-      console.log("bar");
-    },
-  },
-});
-
-// on the parent page
-import { MyComponent } from "./component-definition";
-
-const component = await MyComponent({
-  properties: {
-    backgroundColor: "red",
-  },
-}).render(document.getElementById("#container"));
-
-someButton.addEventListener("click", () => {
-  component.methods.foo(); // should trigger the child to log 'foo'
-  component.methods.bar; // should not exist
-});
-
-// on the child page
-import { MyComponent } from "./component-definition";
-
-// TODO what here?
-const component = MyComponent({
-  onCreate({ properties }) {
-    // fill in props
-  },
-});
-
-component.methods.bar(); // should log 'bar' on the parent
-component.methods.foo; // should not exist
-```
-
-```ts
-// this is probably confusing and we don't want to do it at all :/
-import { FrameComponent } from "frame-component";
-
-class MyComponent extends FrameComponent {
-  constructor(options) {
-    super(options);
-
-    // other stuff
-  }
-}
-```
-
-```ts
 // create parent component on the parent page
 import { createParent } from "frame-component";
 
@@ -127,45 +40,50 @@ const parentComponent = await createParent({
 }).render(document.getElementById("container") as HTMLDivElement);
 ```
 
-On your iframe page, create the HTML needed for your component:
+On your iframe page, create an html file that Preact will render.
 
 ```html
-<div id="background-element">
-  <!-- other important UI stuff -->
-</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Title Here</title>
+  </head>
+  <body>
+    <script type="module" src="./path/to/child.tsx"></script>
+  </body>
+</html>
 ```
 
 And finally, create the child component.
 
-```ts
+```tsx
 import { createChild } from "frame-component";
-
-const backgroundElement = document.getElementById(
-  "background-element"
-) as HTMLDivElement;
+import { render } from "preact";
 
 const childComponent = createChild({
   render({ properties }) {
-    const container = document.createElement("div");
-    container.innerHTML = `
-<div class="section">
-  <h1>Frame Child Component</h1>
-</div>
+    const backgroundColor = properties.backgroundColor as string;
 
-<p class="section" id="color-choice" aria-live="true">
-  Everything you see in this white box is in an iframe.
-</p>
+    return (
+      <div style={{ backgroundColor }}>
+        <div class="section">
+          <h1>Frame Child Component</h1>
+        </div>
 
-<div class="section">
-  <input id="send-message-input" type="text" placeholder="message here" />
-  <button id="send-message-button">Send Message</button>
-</div>
-`;
-    container.style.backgroundColor = properties.backgroundColor;
-
-    return container;
+        <p class="section" aria-live="true">
+          Everything you see in this {backgroundColor} box is in an iframe.
+        </p>
+      </div>
+    );
   },
 });
+
+const App = childComponent.render();
+
+render(<App />, document.body);
 ```
 
 ## Example with Hooks and Methods
@@ -212,11 +130,10 @@ const parentComponent = createParent({
     backgroundColor: "red",
   },
   methods: ["updateBackgroundColor", "getBackgroundColor"],
-  hooks: {
-    sendMessage(message: string) {
-      messageFromIframeContainer.innerText = message;
-    },
-  },
+});
+
+parentComponent.defineHook("sendMessage", (message: string) => {
+  messageFromIframeContainer.innerText = message;
 });
 
 parentComponent.render(container);
@@ -236,50 +153,64 @@ getButton.addEventListener("click", () => {
 });
 ```
 
-Update the HTML on the child page to have an element the user can interact with.
-
-```html
-<div id="background-element">
-  <input id="message" type="text" placeholder="Message text" disabled />
-  <button id="button" disabled>Send Message to Parent</button>
-</div>
-```
-
 Define a `updateBackgroundColor` and a `getBackgroundColor` hook that corresponds with the methods on the parent. They will be invoked whenever the parent calls the corresponding methods. Define the prescence of the `sendMessage` method.
 
-```ts
+```tsx
 import { createChild } from "frame-component";
-
-const backgroundElement = document.getElementById(
-  "background-element"
-) as HTMLDivElement;
-const messageInput = document.getElementById(
-  "background-element"
-) as HTMLInputElement;
-const messageButton = document.getElementById(
-  "background-element"
-) as HTMLButtonElement;
+import { render } from "preact";
 
 const childComponent = createChild({
-  onCreate({ properties }) {
-    backgroundElement.style.backgroundColor = properties.backgroundColor;
-    messageInput.removeAttributed("disabled");
-    messageButton.removeAttributed("disabled");
-  },
   methods: ["sendMessage"],
-  hooks: {
-    updateBackgroundColor(color) {
-      backgroundElement.style.backgroundColor = color;
-    },
-    getBackgroundColor() {
-      return backgroundElement.style.backgroundColor;
-    },
+  render({ properties }) {
+    const origionalBackgroundColor = properties.backgroundColor as string;
+    const [backgroundColor, setBackgroundColor] = useState(
+      origionalBackgroundColor || ""
+    );
+
+    childComponent.defineHook("updateBackgroundColor", (color: string) => {
+      setBackgroundColor(color);
+    });
+    childComponent.defineHook("getBackgroundColor", () => {
+      return backgroundColor;
+    });
+
+    const [messageValue, setMessageValue] = useState("");
+    const onInput = (e: Event) => {
+      const value = (e.target as HTMLInputElement).value;
+      setMessageValue(value);
+    };
+
+    function sendMessage() {
+      childComponent.methods.sendMessage(messageValue);
+    }
+
+    return (
+      <div style={{ backgroundColor }}>
+        <div class="section">
+          <h1>Frame Child Component</h1>
+        </div>
+
+        <p class="section" aria-live="true">
+          Everything you see in this {backgroundColor} box is in an iframe.
+        </p>
+
+        <div className="section">
+          <input
+            type="text"
+            placeholder="message here"
+            value={messageValue}
+            onInput={onInput}
+          />
+          <button onClick={sendMessage}>Send Message</button>
+        </div>
+      </div>
+    );
   },
 });
 
-messageButton.addEventListener("click", () => {
-  childComponent.methods.sendMessage(messageInput.value);
-});
+const App = childComponent.render();
+
+render(<App />, document.body);
 ```
 
 Now when the parent calls `updateBackgroundColor` with a value, the child will update the backgroundColor of the element to the provided color. When the parent calls `getBackgroundColor`, it will resolve with the return value of the `getBackgroundColor` hook on the child.
@@ -308,12 +239,8 @@ window.postMessage(message, "*");
 And the hook defintion for `updateBackgroundColor`:
 
 ```ts
-createChild({
-  hooks: {
-    updateBackgroundColor(color) {
-      backgroundElement.style.backgroundColor = color;
-    },
-  },
+childComponent.defineHook("updateBackgroundColor", (color: string) => {
+  setBackgroundColor(color);
 });
 ```
 
@@ -341,19 +268,15 @@ Admittedly, it's a little more complicated than that, but these examples should 
 
 ### XSS Vulnerability
 
-This module does no sanitization of the arguments passed to hooks and methods. Be careful how you use the values provided in them. For instance, a hook like this:
+Since we're using Preact to do the rendering of the UI in the child component, we have some protection against XSS attacks built in, but if you're doing any DOM manipulation yourself in the iframe while relying on properties from the parent, be careful how you use the values. For instance, a hook like this:
 
 ```ts
-createChild({
-  hooks: {
-    updateColor(color) {
-      someDomNode.innerHTML = `
+childComponent.defineHook("updateColor", (color: string) => {
+  someDomNode.innerHTML = `
 <div class="bg-${color}">
   <!-- other UI stuff -->
 </div>
 `;
-    },
-  },
 });
 ```
 
@@ -371,7 +294,7 @@ The iframe will fit to the height and width of the parent container, so make sur
 
 ### Recomended Styles for Child
 
-For best results, include these styles on your child page:
+TODO, since we're using Preact now, we can set these default styles by ourselves. For best results, include these styles on your child page:
 
 ```css
 * {
