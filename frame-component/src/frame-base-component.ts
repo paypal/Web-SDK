@@ -14,23 +14,28 @@ type HookResponse = {
   result?: unknown;
 };
 
+type Namespace = "parent" | "child";
+
 export type FrameComponentOptions = {
   channel: string;
   methods: MethodNames;
-  namespace: string
+  methodNamespace: Namespace;
+  hookNamespace: Namespace;
 };
 
 export abstract class FrameBaseComponent {
   protected busConfig: FramebusConfig;
   protected channel: string;
   private definedHooks: Record<string, Parameters<typeof on>[2]> = {};
-  private methodNamespace: string;
+  private methodNamespace: Namespace;
+  private hookNamespace: Namespace;
 
   methods: Methods = {};
 
   constructor(options: FrameComponentOptions) {
     this.channel = options.channel;
-    this.methodNamespace = options.namespace
+    this.methodNamespace = options.methodNamespace;
+    this.hookNamespace = options.hookNamespace;
     this.busConfig = initialize({
       channel: this.channel,
     });
@@ -39,7 +44,7 @@ export abstract class FrameBaseComponent {
   }
 
   defineHook(methodName: string, hook: Hook) {
-    const eventName = `trigger-${this.methodNamespace}-method-${methodName}`;
+    const eventName = this.createEventName(methodName, "hook");
 
     if (this.definedHooks[methodName]) {
       off(this.busConfig, eventName, this.definedHooks[methodName]);
@@ -50,6 +55,13 @@ export abstract class FrameBaseComponent {
     this.definedHooks[methodName] = cb;
 
     on(this.busConfig, eventName, cb);
+  }
+
+  private createEventName(eventName: string, kind: "method" | "hook") {
+    const namespace =
+      kind === "method" ? this.methodNamespace : this.hookNamespace;
+
+    return `trigger-${namespace}-method-${eventName}`;
   }
 
   private setMethods(methods: MethodNames) {
@@ -68,7 +80,7 @@ export abstract class FrameBaseComponent {
     return async (...args: unknown[]) => {
       const { error, result } = await emitAsPromise<HookResponse>(
         this.busConfig,
-        `trigger-method-${methodName}`,
+        this.createEventName(methodName, "method"),
         {
           args,
         }

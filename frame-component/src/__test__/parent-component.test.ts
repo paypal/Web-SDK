@@ -29,7 +29,8 @@ describe("ParentComponent", () => {
     expect(FrameBaseComponent).toBeCalledWith({
       channel: "fake-uuid",
       methods: [],
-      namespace: "parent"
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
   });
 

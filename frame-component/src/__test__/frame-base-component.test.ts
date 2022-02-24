@@ -19,7 +19,8 @@ describe("FrameBaseComponent", () => {
     new SubComponent({
       channel: "custom-channel",
       methods: [],
-      namespace: "subcomponent"
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     expect(initialize).toBeCalledTimes(1);
@@ -32,7 +33,8 @@ describe("FrameBaseComponent", () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo", "bar"],
-      namespace: "subcomponent"
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     expect(component.methods.foo).toEqual(expect.any(Function));
@@ -42,25 +44,34 @@ describe("FrameBaseComponent", () => {
     component.methods.foo("foo", "bar", "baz");
 
     expect(emitAsPromise).toBeCalledTimes(1);
-    expect(emitAsPromise).toBeCalledWith(fakeConfig, "trigger-method-foo", {
-      args: ["foo", "bar", "baz"],
-    });
+    expect(emitAsPromise).toBeCalledWith(
+      fakeConfig,
+      "trigger-parent-method-foo",
+      {
+        args: ["foo", "bar", "baz"],
+      }
+    );
 
     jest.mocked(emitAsPromise).mockClear();
 
     component.methods.bar("foo", "bar", "baz");
 
     expect(emitAsPromise).toBeCalledTimes(1);
-    expect(emitAsPromise).toBeCalledWith(fakeConfig, "trigger-method-bar", {
-      args: ["foo", "bar", "baz"],
-    });
+    expect(emitAsPromise).toBeCalledWith(
+      fakeConfig,
+      "trigger-parent-method-bar",
+      {
+        args: ["foo", "bar", "baz"],
+      }
+    );
   });
 
   it("creates methods that resolve when the emit call resolves", async () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo"],
-      namespace: "subcomponent"
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     jest.mocked(emitAsPromise).mockResolvedValue({ result: "foo" });
@@ -74,7 +85,8 @@ describe("FrameBaseComponent", () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo"],
-      namespace: "subcomponent"
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     jest
@@ -90,7 +102,8 @@ describe("FrameBaseComponent", () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo"],
-      namespace: "subcomponent"
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     jest
@@ -103,52 +116,44 @@ describe("FrameBaseComponent", () => {
   });
 
   it("namespaces the methods based on input", () => {
-    const fooSpy = jest.fn()
-    const namespace = "subcomponent"
-    const methodName = "foo"
+    const fooSpy = jest.fn();
+    const methodName = "foo";
     const component = new SubComponent({
       channel: "muh-channel",
       methods: [methodName],
-      namespace: "subcomponent"
-    })
+      methodNamespace: "parent",
+      hookNamespace: "child",
+    });
 
-    component.defineHook(methodName, fooSpy)
+    component.defineHook(methodName, fooSpy);
 
     expect(on).toBeCalledWith(
       fakeConfig,
-      `trigger-${namespace}-method-${methodName}`,
+      `trigger-child-method-${methodName}`,
       expect.any(Function)
     );
-  })
+  });
 
   it("creates listener for each hook", () => {
     const fooSpy = jest.fn();
     const barSpy = jest.fn();
-    const namespace = "subcomponent"
 
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
-      namespace
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
-    const fooEventName = `trigger-${namespace}-method-foo`
-    const barEventName = `trigger-${namespace}-method-bar`
+    const fooEventName = `trigger-child-method-foo`;
+    const barEventName = `trigger-child-method-bar`;
 
     expect(on).toBeCalledTimes(2);
-    expect(on).toBeCalledWith(
-      fakeConfig,
-      fooEventName,
-      expect.any(Function)
-    );
-    expect(on).toBeCalledWith(
-      fakeConfig,
-      barEventName,
-      expect.any(Function)
-    );
+    expect(on).toBeCalledWith(fakeConfig, fooEventName, expect.any(Function));
+    expect(on).toBeCalledWith(fakeConfig, barEventName, expect.any(Function));
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === fooEventName;
@@ -181,11 +186,11 @@ describe("FrameBaseComponent", () => {
 
   it("removes the listener if it already exists", () => {
     const fooSpy = jest.fn();
-    const namespace = "subcomponent";
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
-      namespace
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     component.defineHook("foo", fooSpy);
@@ -195,7 +200,7 @@ describe("FrameBaseComponent", () => {
     expect(off).toBeCalledTimes(1);
     expect(off).toBeCalledWith(
       fakeConfig,
-      `trigger-${namespace}-method-foo`,
+      `trigger-child-method-foo`,
       expect.any(Function)
     );
   });
@@ -204,18 +209,18 @@ describe("FrameBaseComponent", () => {
     const fooSpy = jest.fn().mockResolvedValue("foo");
     const barSpy = jest.fn().mockReturnValue("bar");
 
-    const namespace = "subcomponent"
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
-      namespace
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
-    const fooEventName = `trigger-${namespace}-method-foo`
-    const barEventName = `trigger-${namespace}-method-bar`
+    const fooEventName = `trigger-child-method-foo`;
+    const barEventName = `trigger-child-method-bar`;
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
       return args[1] === fooEventName;
@@ -259,18 +264,18 @@ describe("FrameBaseComponent", () => {
       throw new Error("some other error");
     });
 
-    const namespace = "subcomponent"
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
-      namespace
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === `trigger-${namespace}-method-foo`;
+      return args[1] === `trigger-child-method-foo`;
     })![2];
 
     const fooReply = jest.fn();
@@ -288,7 +293,7 @@ describe("FrameBaseComponent", () => {
     });
 
     const barCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === `trigger-${namespace}-method-bar`;
+      return args[1] === `trigger-child-method-bar`;
     })![2];
     const barReply = jest.fn();
 
@@ -312,18 +317,18 @@ describe("FrameBaseComponent", () => {
     const barSpy = jest.fn().mockImplementation(() => {
       throw { message: "not some other error" };
     });
-    const namespace = "subcomponent"
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
-      namespace
+      methodNamespace: "parent",
+      hookNamespace: "child",
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === `trigger-${namespace}-method-foo`;
+      return args[1] === `trigger-child-method-foo`;
     })![2];
 
     const fooReply = jest.fn();
@@ -341,7 +346,7 @@ describe("FrameBaseComponent", () => {
     });
 
     const barCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === `trigger-${namespace}-method-bar`;
+      return args[1] === `trigger-child-method-bar`;
     })![2];
     const barReply = jest.fn();
 
@@ -363,7 +368,8 @@ describe("FrameBaseComponent", () => {
       new SubComponent({
         channel: "custom-channel",
         methods: ["foo", "foo"],
-        namespace: "subcomponent"
+        methodNamespace: "parent",
+        hookNamespace: "child",
       });
     }).toThrow(
       new Error(

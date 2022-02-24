@@ -26,7 +26,8 @@ describe("ChildComponent", () => {
     expect(FrameBaseComponent).toBeCalledWith({
       channel: "unique-id",
       methods: [],
-      namespace: "child"
+      methodNamespace: "child",
+      hookNamespace: "parent",
     });
 
     window.location = originalLocation;
