@@ -17,38 +17,29 @@ type HookResponse = {
 export type FrameComponentOptions = {
   channel: string;
   methods: MethodNames;
+  namespace: string
 };
 
 export abstract class FrameBaseComponent {
   protected busConfig: FramebusConfig;
   protected channel: string;
   private definedHooks: Record<string, Parameters<typeof on>[2]> = {};
+  private methodNamespace: string;
 
   methods: Methods = {};
 
   constructor(options: FrameComponentOptions) {
     this.channel = options.channel;
+    this.methodNamespace = options.namespace
     this.busConfig = initialize({
       channel: this.channel,
     });
-
-    // TODO: evaluate these scenario when applied to the `defineHooks` approach. See test in
-    // framebase tests.
-    // const methodsHaveOverlappingNameWithHooks = options.methods.find((name) => {
-    //   return name in options.hooks;
-    // });
-
-    // if (methodsHaveOverlappingNameWithHooks) {
-    //   throw new Error(
-    //     "Implementation Error: hooks and methods must have unique names"
-    //   );
-    // }
 
     this.setMethods(options.methods);
   }
 
   defineHook(methodName: string, hook: Hook) {
-    const eventName = `trigger-method-${methodName}`;
+    const eventName = `trigger-${this.methodNamespace}-method-${methodName}`;
 
     if (this.definedHooks[methodName]) {
       off(this.busConfig, eventName, this.definedHooks[methodName]);

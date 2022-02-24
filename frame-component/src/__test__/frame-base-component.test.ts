@@ -19,6 +19,7 @@ describe("FrameBaseComponent", () => {
     new SubComponent({
       channel: "custom-channel",
       methods: [],
+      namespace: "subcomponent"
     });
 
     expect(initialize).toBeCalledTimes(1);
@@ -31,6 +32,7 @@ describe("FrameBaseComponent", () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo", "bar"],
+      namespace: "subcomponent"
     });
 
     expect(component.methods.foo).toEqual(expect.any(Function));
@@ -58,6 +60,7 @@ describe("FrameBaseComponent", () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo"],
+      namespace: "subcomponent"
     });
 
     jest.mocked(emitAsPromise).mockResolvedValue({ result: "foo" });
@@ -71,6 +74,7 @@ describe("FrameBaseComponent", () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo"],
+      namespace: "subcomponent"
     });
 
     jest
@@ -86,6 +90,7 @@ describe("FrameBaseComponent", () => {
     const component = new SubComponent({
       channel: "custom-channel",
       methods: ["foo"],
+      namespace: "subcomponent"
     });
 
     jest
@@ -97,32 +102,56 @@ describe("FrameBaseComponent", () => {
     });
   });
 
+  it("namespaces the methods based on input", () => {
+    const fooSpy = jest.fn()
+    const namespace = "subcomponent"
+    const methodName = "foo"
+    const component = new SubComponent({
+      channel: "muh-channel",
+      methods: [methodName],
+      namespace: "subcomponent"
+    })
+
+    component.defineHook(methodName, fooSpy)
+
+    expect(on).toBeCalledWith(
+      fakeConfig,
+      `trigger-${namespace}-method-${methodName}`,
+      expect.any(Function)
+    );
+  })
+
   it("creates listener for each hook", () => {
     const fooSpy = jest.fn();
     const barSpy = jest.fn();
+    const namespace = "subcomponent"
 
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
+      namespace
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
+    const fooEventName = `trigger-${namespace}-method-foo`
+    const barEventName = `trigger-${namespace}-method-bar`
+
     expect(on).toBeCalledTimes(2);
     expect(on).toBeCalledWith(
       fakeConfig,
-      "trigger-method-foo",
+      fooEventName,
       expect.any(Function)
     );
     expect(on).toBeCalledWith(
       fakeConfig,
-      "trigger-method-bar",
+      barEventName,
       expect.any(Function)
     );
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-foo";
+      return args[1] === fooEventName;
     })![2];
 
     fooCallback(
@@ -136,7 +165,7 @@ describe("FrameBaseComponent", () => {
     expect(fooSpy).toBeCalledWith("foo", "bar", "baz");
 
     const barCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-bar";
+      return args[1] === barEventName;
     })![2];
 
     barCallback(
@@ -152,10 +181,11 @@ describe("FrameBaseComponent", () => {
 
   it("removes the listener if it already exists", () => {
     const fooSpy = jest.fn();
-
+    const namespace = "subcomponent";
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
+      namespace
     });
 
     component.defineHook("foo", fooSpy);
@@ -165,7 +195,7 @@ describe("FrameBaseComponent", () => {
     expect(off).toBeCalledTimes(1);
     expect(off).toBeCalledWith(
       fakeConfig,
-      "trigger-method-foo",
+      `trigger-${namespace}-method-foo`,
       expect.any(Function)
     );
   });
@@ -174,16 +204,21 @@ describe("FrameBaseComponent", () => {
     const fooSpy = jest.fn().mockResolvedValue("foo");
     const barSpy = jest.fn().mockReturnValue("bar");
 
+    const namespace = "subcomponent"
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
+      namespace
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
+    const fooEventName = `trigger-${namespace}-method-foo`
+    const barEventName = `trigger-${namespace}-method-bar`
+
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-foo";
+      return args[1] === fooEventName;
     })![2];
 
     const fooReply = jest.fn();
@@ -201,7 +236,7 @@ describe("FrameBaseComponent", () => {
     });
 
     const barCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-bar";
+      return args[1] === barEventName;
     })![2];
     const barReply = jest.fn();
 
@@ -224,16 +259,18 @@ describe("FrameBaseComponent", () => {
       throw new Error("some other error");
     });
 
+    const namespace = "subcomponent"
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
+      namespace
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-foo";
+      return args[1] === `trigger-${namespace}-method-foo`;
     })![2];
 
     const fooReply = jest.fn();
@@ -251,7 +288,7 @@ describe("FrameBaseComponent", () => {
     });
 
     const barCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-bar";
+      return args[1] === `trigger-${namespace}-method-bar`;
     })![2];
     const barReply = jest.fn();
 
@@ -275,17 +312,18 @@ describe("FrameBaseComponent", () => {
     const barSpy = jest.fn().mockImplementation(() => {
       throw { message: "not some other error" };
     });
-
+    const namespace = "subcomponent"
     const component = new SubComponent({
       channel: "custom-channel",
       methods: [],
+      namespace
     });
 
     component.defineHook("foo", fooSpy);
     component.defineHook("bar", barSpy);
 
     const fooCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-foo";
+      return args[1] === `trigger-${namespace}-method-foo`;
     })![2];
 
     const fooReply = jest.fn();
@@ -303,7 +341,7 @@ describe("FrameBaseComponent", () => {
     });
 
     const barCallback = jest.mocked(on).mock.calls.find((args) => {
-      return args[1] === "trigger-method-bar";
+      return args[1] === `trigger-${namespace}-method-bar`;
     })![2];
     const barReply = jest.fn();
 
@@ -320,28 +358,12 @@ describe("FrameBaseComponent", () => {
     });
   });
 
-  it.skip("throws an error when hooks and methods have the same identifier", () => {
-    // Forgive my slowness, ugh, but I'm not seeing how to port this to the new approach that uses `defineHooks`
-    // Do we want to still avoid this and thus should be checking for overlap between hooks/methods
-    // with defineHooks and throwing there? Maybe I'm not grokking the problem with name overlap at the moment.
-
-    expect(() => {
-      new SubComponent({
-        channel: "custom-channel",
-        methods: ["foo"],
-      });
-    }).toThrow(
-      new Error(
-        "Implementation Error: hooks and methods must have unique names"
-      )
-    );
-  });
-
   it("throws an error when multiple methods with the same name are passed", () => {
     expect(() => {
       new SubComponent({
         channel: "custom-channel",
         methods: ["foo", "foo"],
+        namespace: "subcomponent"
       });
     }).toThrow(
       new Error(
