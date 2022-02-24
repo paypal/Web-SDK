@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/paypal/Web-SDK#readme",
   "devDependencies": {
+    "@preact/preset-vite": "^2.1.7",
     "@wdio/cli": "^7.16.15",
     "@wdio/local-runner": "^7.16.15",
     "@wdio/mocha-framework": "^7.16.15",
@@ -43,8 +44,9 @@
     "wdio-wait-for": "^2.2.1"
   },
   "dependencies": {
+    "@braintree/iframer": "^1.1.0",
     "@braintree/uuid": "^0.1.0",
     "framebus": "^6.0.0-rc.3",
-    "@braintree/iframer": "^1.1.0"
+    "preact": "^10.6.6"
   }
 }

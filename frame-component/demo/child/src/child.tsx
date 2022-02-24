@@ -1,4 +1,4 @@
-import { createChild } from "../../../src/create-child";
+import { createChild } from "../../../src/";
 import { render } from "preact";
 import { useState } from "preact/hooks";
 
