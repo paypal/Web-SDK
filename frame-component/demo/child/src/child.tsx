@@ -1,6 +1,6 @@
 import { createChild } from "../../../src/create-child";
 import { render } from "preact";
-import { useState, useEffect } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 const childComponent = createChild({
   render({ properties }) {

@@ -7,9 +7,7 @@ type Method = (...args: any[]) => Promise<unknown>;
 type Methods = {
   [key: string]: Method;
 };
-type Hooks = {
-  [key: string]: Hook;
-};
+
 type MethodNames = string[];
 type HookResponse = {
   error?: unknown;
@@ -19,7 +17,6 @@ type HookResponse = {
 export type FrameComponentOptions = {
   channel: string;
   methods: MethodNames;
-  // hooks: Hooks;
 };
 
 export abstract class FrameBaseComponent {
@@ -91,16 +88,6 @@ export abstract class FrameBaseComponent {
       }
       return result;
     };
-  }
-
-  private setHooks(hooksMap: Hooks) {
-    for (const [methodName, hook] of Object.entries(hooksMap)) {
-      on(
-        this.busConfig,
-        `trigger-method-${methodName}`,
-        this.createHookCallback(hook)
-      );
-    }
   }
 
   protected createHookCallback(hook: Hook): Parameters<typeof on>[2] {
