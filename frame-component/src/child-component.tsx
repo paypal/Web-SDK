@@ -20,6 +20,7 @@ export class ChildComponent extends FrameBaseComponent {
     super({
       channel: window.location.hash.slice(1, window.location.hash.length),
       methods: options.methods || [],
+      namespace: "child"
     });
     this.parentProps = JSON.parse(window.name || "{}");
     this.configuredRender = options.render;
