@@ -40,7 +40,7 @@ const parentComponent = await createParent({
 }).render(document.getElementById("container") as HTMLDivElement);
 ```
 
-On your iframe page, create an html file that Preact will render.
+On your iframe page, create an html file that Preact will render into.
 
 ```html
 <!DOCTYPE html>
