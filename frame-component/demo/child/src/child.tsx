@@ -23,8 +23,7 @@ const childComponent = createChild({
     };
 
     function sendMessage() {
-      console.log("sending message:", messageValue);
-      childComponent.methods.sendessage(messageValue);
+      childComponent.methods.sendMessage(messageValue);
     }
 
     return (
