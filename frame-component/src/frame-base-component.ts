@@ -19,7 +19,7 @@ type HookResponse = {
 export type FrameComponentOptions = {
   channel: string;
   methods: MethodNames;
-  hooks: Hooks;
+  // hooks: Hooks;
 };
 
 export abstract class FrameBaseComponent {
@@ -35,15 +35,17 @@ export abstract class FrameBaseComponent {
       channel: this.channel,
     });
 
-    const methodsHaveOverlappingNameWithHooks = options.methods.find((name) => {
-      return name in options.hooks;
-    });
+    // TODO: evaluate these scenario when applied to the `defineHooks` approach. See test in
+    // framebase tests.
+    // const methodsHaveOverlappingNameWithHooks = options.methods.find((name) => {
+    //   return name in options.hooks;
+    // });
 
-    if (methodsHaveOverlappingNameWithHooks) {
-      throw new Error(
-        "Implementation Error: hooks and methods must have unique names"
-      );
-    }
+    // if (methodsHaveOverlappingNameWithHooks) {
+    //   throw new Error(
+    //     "Implementation Error: hooks and methods must have unique names"
+    //   );
+    // }
 
     this.setMethods(options.methods);
   }

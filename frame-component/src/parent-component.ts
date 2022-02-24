@@ -25,7 +25,6 @@ export class ParentComponent extends FrameBaseComponent {
     super({
       channel: uuid(),
       methods: options.methods || [],
-      hooks: options.hooks || {},
     });
     this.url = options.url as string;
 

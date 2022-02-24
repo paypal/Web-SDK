@@ -1,5 +1,5 @@
 import type { ParentProperties } from "./parent-component";
-import { on, emit, off } from "framebus";
+import { emit } from "framebus";
 import { useEffect } from "preact/hooks";
 import type { VNode } from "preact";
 import {
@@ -20,7 +20,6 @@ export class ChildComponent extends FrameBaseComponent {
     super({
       channel: window.location.hash.slice(1, window.location.hash.length),
       methods: options.methods || [],
-      hooks: options.hooks || {},
     });
     this.parentProps = JSON.parse(window.name || "{}");
     this.configuredRender = options.render;
