@@ -9,7 +9,7 @@ import { CHILD_READY_EVENT } from "./internal-event-names";
 export type ChildOptions = Partial<FrameComponentOptions> & {};
 
 export class ChildComponent extends FrameBaseComponent {
-  public parentProps: ParentProperties;
+  public properties: ParentProperties;
 
   constructor(options: ChildOptions) {
     super({
@@ -18,7 +18,7 @@ export class ChildComponent extends FrameBaseComponent {
       methodNamespace: "child",
       hookNamespace: "parent",
     });
-    this.parentProps = JSON.parse(window.name || "{}");
+    this.properties = JSON.parse(window.name || "{}");
   }
 
   reportReady() {

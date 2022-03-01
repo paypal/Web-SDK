@@ -7,7 +7,8 @@ const childComponent = createChild({
 });
 
 function App() {
-  const origionalBackgroundColor = undefined; //childComponent.properties.backgroundColor as string;
+  const origionalBackgroundColor = childComponent.properties
+    .backgroundColor as string;
   const [backgroundColor, setBackgroundColor] = useState(
     origionalBackgroundColor || ""
   );

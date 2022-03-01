@@ -156,7 +156,7 @@ getButton.addEventListener("click", () => {
 Define a `updateBackgroundColor` and a `getBackgroundColor` hook that corresponds with the methods on the parent. They will be invoked whenever the parent calls the corresponding methods. Define the prescence of the `sendMessage` method.
 
 ```tsx
-import { createChild } from "../../../src/";
+import { createChild } from "frame-component";
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
 

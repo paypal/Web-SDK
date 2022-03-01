@@ -32,6 +32,25 @@ describe("ChildComponent", () => {
     window.location = originalLocation;
   });
 
+  it("sets properties from frame name", () => {
+    const originalName = window.name;
+    window.name = `{"foo":"bar"}`;
+
+    const child = new ChildComponent({});
+
+    expect(child.properties).toEqual({
+      foo: "bar",
+    });
+
+    window.name = originalName;
+  });
+
+  it("defaults properties to an empty object", () => {
+    const child = new ChildComponent({});
+
+    expect(child.properties).toEqual({});
+  });
+
   describe("reportReady()", () => {
     it("returns emit when called", () => {
       const child = new ChildComponent({});
