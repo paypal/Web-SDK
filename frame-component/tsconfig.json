@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "allowJs": false,
     "esModuleInterop": true,
     "outDir": "./dist",
     "module": "commonjs",
     "target": "es2015",
     "lib": ["es2015", "dom"],
-    "strict": true
+    "strict": true,
+    "rootDirs": ["src", "demo"]
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "./demo/**/*"],
   "exclude": ["./**/__test__/*"]
 }
