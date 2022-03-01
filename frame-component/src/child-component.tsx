@@ -6,7 +6,7 @@ import {
 } from "./frame-base-component";
 import { CHILD_READY_EVENT } from "./internal-event-names";
 
-export type ChildOptions = Partial<FrameComponentOptions> & {};
+export type ChildOptions = Partial<FrameComponentOptions>;
 
 export class ChildComponent extends FrameBaseComponent {
   public properties: ParentProperties;
