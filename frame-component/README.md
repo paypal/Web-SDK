@@ -1,5 +1,7 @@
 # Frame Component
 
+TODO - right now the name doesn't really make sense, since the child portion of this module does not do anything to help render the conmponent, it just facilitates communication with the parent page. We may want to eventually re-name this module, or refactor it to have more control over the child component.
+
 A module for creating a wrapper around iframes/popups (popup feature is aspirational right now) for communicating with the parent page. Inspired by [zoid](https://github.com/krakenjs/zoid), but written in TypeScript without the extra reactive component.
 
 ## Basic Iframe Example
@@ -40,7 +42,7 @@ const parentComponent = await createParent({
 }).render(document.getElementById("container") as HTMLDivElement);
 ```
 
-On your iframe page, create an html file that Preact will render into.
+On your iframe page, create an html file. In this example, we are using Preact, but any framework will work.
 
 ```html
 <!DOCTYPE html>
@@ -50,6 +52,18 @@ On your iframe page, create an html file that Preact will render into.
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page Title Here</title>
+    <!-- These styles are recomended so that there are no margin/padding gaps within the iframe -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body,
+      html {
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
     <script type="module" src="./path/to/child.tsx"></script>
@@ -62,24 +76,31 @@ And finally, create the child component.
 ```tsx
 import { createChild } from "frame-component";
 import { render } from "preact";
+import { useEffect } from "preact/hooks";
 
-const childComponent = createChild({
-  render({ properties }) {
-    const backgroundColor = properties.backgroundColor as string;
+const childComponent = createChild({});
 
-    return (
-      <div style={{ backgroundColor }}>
-        <div class="section">
-          <h1>Frame Child Component</h1>
-        </div>
+function App() {
+  const backgroundColor = childComponent.properties.backgroundColor as string;
 
-        <p class="section" aria-live="true">
-          Everything you see in this {backgroundColor} box is in an iframe.
-        </p>
+  useEffect(() => {
+    // the first time the component renders, we report back
+    // to the parent that we're ready to go
+    childComponent.reportReady();
+  }, []);
+
+  return (
+    <div style={{ backgroundColor }}>
+      <div class="section">
+        <h1>Frame Child Component</h1>
       </div>
-    );
-  },
-});
+
+      <p class="section" aria-live="true">
+        Everything you see in this {backgroundColor} box is in an iframe.
+      </p>
+    </div>
+  );
+}
 
 const App = childComponent.render();
 
