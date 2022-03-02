@@ -1,20 +1,10 @@
 import { render } from "../";
 import { createParent } from "frame-component";
-import type { ParentComponent } from "frame-component/src/parent-component";
+import { fakeParent } from "../../__mocks__/frame-component";
 
 jest.mock("frame-component");
 
 describe("render", () => {
-  let fakeFrameComponent: ParentComponent;
-
-  beforeEach(() => {
-    fakeFrameComponent = {
-      render: jest.fn().mockResolvedValue(fakeFrameComponent),
-    } as unknown as ParentComponent;
-
-    jest.mocked(createParent).mockReturnValue(fakeFrameComponent);
-  });
-
   it("renders frame component in the specified container", () => {
     const dom1 = document.createElement("div");
     const dom2 = document.createElement("div");
@@ -46,8 +36,8 @@ describe("render", () => {
       title: "Title Two",
     });
 
-    expect(fakeFrameComponent.render).toBeCalledTimes(2);
-    expect(fakeFrameComponent.render).toBeCalledWith(dom1);
-    expect(fakeFrameComponent.render).toBeCalledWith(dom2);
+    expect(fakeParent.render).toBeCalledTimes(2);
+    expect(fakeParent.render).toBeCalledWith(dom1);
+    expect(fakeParent.render).toBeCalledWith(dom2);
   });
 });
