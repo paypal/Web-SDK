@@ -1,4 +1,4 @@
-import { createParent } from "../../../src";
+import { createParent } from "../../../";
 
 const input = document.getElementById(
   "background-color-choice"
