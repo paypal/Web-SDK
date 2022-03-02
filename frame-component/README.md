@@ -20,6 +20,7 @@ import { createParent } from "frame-component";
 
 const parentComponent = createParent({
   url: "https://www.example.com/location-of-child-component",
+  title: "Iframe Title",
   properties: {
     backgroundColor: "red",
   },
@@ -36,6 +37,7 @@ parentComponent
 // an async function
 const parentComponent = await createParent({
   url: "https://www.example.com/location-of-child-component",
+  title: "Iframe Title",
   properties: {
     backgroundColor: "red",
   },
@@ -147,6 +149,7 @@ const container = document.getElementById("container") as HTMLDivElement;
 
 const parentComponent = createParent({
   url: "https://www.example.com/location-of-child-component",
+  title: "Iframe Title",
   properties: {
     backgroundColor: "red",
   },
