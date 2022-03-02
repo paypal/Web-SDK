@@ -5,6 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "demo": "run-p demo:dev-*",
+    "demo:dev-parent-page": "vite --config demo/parent/vite.config.ts serve demo/parent",
+    "demo:dev-iframes-page": "vite --config demo/iframes/vite.config.ts serve demo/iframes",
+    "demo:prod": "run-p demo:prod-*",
+    "demo:prod-parent": "vite --config demo/parent/vite.config.ts build demo/parent && http-server -p 3000 demo/parent/dist",
+    "demo:prod-iframes": "vite --config demo/parent/vite.config.ts build demo/iframes && http-server -p 3001 demo/iframes/dist",
     "test": "jest"
   },
   "keywords": [],
