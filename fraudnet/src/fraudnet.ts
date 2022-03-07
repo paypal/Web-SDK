@@ -9,10 +9,11 @@ export type FraudnetOptions = {
   fraudnetSource: string;
 };
 
-export type ConfigScript = {
+export type ConfigScriptProperties = {
   f: string;
   s: string;
   b: string;
+  sandbox?: boolean;
 };
 
 export class Fraudnet {
@@ -34,11 +35,14 @@ export class Fraudnet {
 
   loadFraudnet() {
     const body = this.getBody();
-    const config = {
+    const config: ConfigScriptProperties = {
       f: this.sessionId,
       s: this.fraudnetSource,
       b: this.generateBeaconId(this.sessionId),
     };
+    if (this.env !== "production") {
+      config.sandbox = true;
+    }
     const configScript = document.createElement("script");
     configScript.setAttribute("type", "application/json");
     configScript.setAttribute(
