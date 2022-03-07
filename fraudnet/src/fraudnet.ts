@@ -34,6 +34,14 @@ export class Fraudnet {
   }
 
   loadFraudnet() {
+    this.loadConfig();
+  }
+
+  removeFraudnet() {
+    // Todo
+  }
+
+  private loadConfig() {
     const body = this.getBody();
     const config: ConfigScriptProperties = {
       f: this.sessionId,
@@ -51,10 +59,6 @@ export class Fraudnet {
     );
     configScript.textContent = JSON.stringify(config);
     body.appendChild(configScript);
-  }
-
-  removeFraudnet() {
-    // Todo
   }
 
   private getBody() {
