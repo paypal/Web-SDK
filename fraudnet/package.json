@@ -1,0 +1,23 @@
+{
+  "name": "fraudnet",
+  "version": "1.0.0",
+  "description": "Add and remove fraudnet",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc --declaration -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paypal/Web-SDK.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paypal/Web-SDK/issues"
+  },
+  "homepage": "https://github.com/paypal/Web-SDK#readme",
+  "dependencies": {
+    "@braintree/asset-loader": "^0.4.4"
+  }
+}
