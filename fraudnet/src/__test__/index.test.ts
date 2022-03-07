@@ -10,7 +10,11 @@ describe("Fraudnet", () => {
       cspNonce: "cspNonce1",
       timeout: "5s",
       sessionId: "id123",
+      fraudnetSource: "FRAUDNET_SOURCE",
     };
+  });
+  afterEach(() => {
+    document.body.innerHTML = "";
   });
   describe("createFraudnet", () => {
     it("returns a fraudnet instance", () => {
@@ -25,8 +29,21 @@ describe("Fraudnet", () => {
       // shouldn't load more than once on the page
     });
     it("loads a config script on the page", () => {
-      // todo
-      // shouldn't load more than once on the page
+      const fraudnet = createFraudnet(options);
+
+      fraudnet.loadFraudnet();
+
+      const sessionId = fraudnet.sessionId;
+
+      const el = document.querySelector('[fncls][type="application/json"]');
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const parsedData = JSON.parse(el.textContent);
+
+      expect(el).not.toBeNull();
+      expect(parsedData.f).toBe(sessionId);
+      expect(parsedData.s).toBe("FRAUDNET_SOURCE");
+      expect(parsedData.b).toContain(sessionId);
     });
     it("configures for sandbox mode when specified", () => {
       // todo
