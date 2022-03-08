@@ -1,10 +1,13 @@
+import { loadScript } from "@braintree/asset-loader";
+
 export type FraudnetOptions = {
   env: string;
   clientMetadataId: string;
   cspNonce?: string;
   timeout: string;
   sessionId?: string;
-  fraudnetSource: string;
+  fraudnetAppName: string;
+  fraudnetURL: string;
 };
 
 export type ConfigScriptProperties = {
@@ -20,7 +23,9 @@ export class Fraudnet {
   protected cspNonce?: string;
   protected timeout: string;
   sessionId?: string;
-  protected fraudnetSource: string;
+  protected fraudnetAppName: string;
+  protected fraudnetURL: string;
+  private thirdPartyBlock?: HTMLElement;
 
   constructor(options: FraudnetOptions) {
     this.env = options.env;
@@ -28,11 +33,13 @@ export class Fraudnet {
     this.cspNonce = options.cspNonce;
     this.timeout = options.timeout;
     this.sessionId = options.sessionId || this.generateSessionId();
-    this.fraudnetSource = options.fraudnetSource;
+    this.fraudnetAppName = options.fraudnetAppName;
+    this.fraudnetURL = options.fraudnetURL;
   }
 
   loadFraudnet() {
     this.loadConfig();
+    this.loadFraudnetScript();
   }
 
   removeFraudnet() {
@@ -43,7 +50,7 @@ export class Fraudnet {
     const body = this.getBody();
     const config: ConfigScriptProperties = {
       f: this.sessionId as string,
-      s: this.fraudnetSource,
+      s: this.fraudnetAppName,
       b: this.generateBeaconId(this.sessionId as string),
     };
     if (this.env !== "production") {
@@ -57,6 +64,13 @@ export class Fraudnet {
     );
     configScript.textContent = JSON.stringify(config);
     body.appendChild(configScript);
+  }
+
+  private async loadFraudnetScript() {
+    const block = await loadScript({
+      src: this.fraudnetURL,
+    });
+    this.thirdPartyBlock = block;
   }
 
   private getBody() {

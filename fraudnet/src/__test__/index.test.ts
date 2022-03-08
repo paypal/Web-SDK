@@ -9,7 +9,8 @@ describe("Fraudnet", () => {
       clientMetadataId: "cmid123",
       cspNonce: "cspNonce1",
       timeout: "5s",
-      fraudnetSource: "FRAUDNET_SOURCE",
+      fraudnetAppName: "APP_USING_FRAUDNET",
+      fraudnetURL: "https://example.com",
     };
   });
   afterEach(() => {
@@ -22,10 +23,15 @@ describe("Fraudnet", () => {
       expect(fraudnet).toBeInstanceOf(Fraudnet);
     });
   });
-  describe("loadScript", () => {
-    it("loads a fraudnet script on the page", () => {
-      // todo
-      // shouldn't load more than once on the page
+  describe("loadFraudnet", () => {
+    it("loads a fraudnet script on the page with the specified source", () => {
+      const fraudnet = createFraudnet(options);
+
+      fraudnet.loadFraudnet();
+
+      const el = document.querySelector(`[src="https://example.com"]`);
+
+      expect(el).toBeTruthy();
     });
     it("loads a config script on the page", () => {
       const fraudnet = createFraudnet(options);
@@ -40,7 +46,7 @@ describe("Fraudnet", () => {
       const parsedData = JSON.parse(el.textContent as string);
 
       expect(parsedData.f).toBe(sessionId);
-      expect(parsedData.s).toBe("FRAUDNET_SOURCE");
+      expect(parsedData.s).toBe("APP_USING_FRAUDNET");
       expect(parsedData.b).toContain(sessionId);
     });
     it("can pass a custom session id", () => {
@@ -75,7 +81,7 @@ describe("Fraudnet", () => {
       expect(parsedData).not.toHaveProperty("sandbox");
     });
   });
-  describe("removeScript", () => {
+  describe("removeFraudnet", () => {
     it("removes the fraudnet script on the page", () => {
       //  todo
     });
