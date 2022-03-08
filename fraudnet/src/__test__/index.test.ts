@@ -9,7 +9,6 @@ describe("Fraudnet", () => {
       clientMetadataId: "cmid123",
       cspNonce: "cspNonce1",
       timeout: "5s",
-      sessionId: "id123",
       fraudnetSource: "FRAUDNET_SOURCE",
     };
   });
@@ -35,12 +34,11 @@ describe("Fraudnet", () => {
 
       const sessionId = fraudnet.sessionId;
 
-      const el = document.querySelector('[fncls][type="application/json"]');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const parsedData = JSON.parse(el.textContent);
+      const el = document.querySelector(
+        '[fncls][type="application/json"]'
+      ) as HTMLScriptElement;
+      const parsedData = JSON.parse(el.textContent as string);
 
-      expect(el).not.toBeNull();
       expect(parsedData.f).toBe(sessionId);
       expect(parsedData.s).toBe("FRAUDNET_SOURCE");
       expect(parsedData.b).toContain(sessionId);
@@ -56,10 +54,10 @@ describe("Fraudnet", () => {
 
       fraudnet.loadFraudnet();
 
-      const el = document.querySelector('[fncls][type="application/json"]');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const parsedData = JSON.parse(el.textContent);
+      const el = document.querySelector(
+        '[fncls][type="application/json"]'
+      ) as HTMLScriptElement;
+      const parsedData = JSON.parse(el.textContent as string);
 
       expect(parsedData).toHaveProperty("sandbox");
     });
@@ -69,10 +67,10 @@ describe("Fraudnet", () => {
 
       fraudnet.loadFraudnet();
 
-      const el = document.querySelector('[fncls][type="application/json"]');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const parsedData = JSON.parse(el.textContent);
+      const el = document.querySelector(
+        '[fncls][type="application/json"]'
+      ) as HTMLScriptElement;
+      const parsedData = JSON.parse(el.textContent as string);
 
       expect(parsedData).not.toHaveProperty("sandbox");
     });

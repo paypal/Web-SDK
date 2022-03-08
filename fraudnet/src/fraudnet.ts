@@ -1,11 +1,9 @@
-import { loadScript } from "@braintree/asset-loader";
-
 export type FraudnetOptions = {
   env: string;
   clientMetadataId: string;
   cspNonce?: string;
   timeout: string;
-  sessionId: string;
+  sessionId?: string;
   fraudnetSource: string;
 };
 
@@ -21,7 +19,7 @@ export class Fraudnet {
   protected clientMetadataID: string;
   protected cspNonce?: string;
   protected timeout: string;
-  sessionId: string;
+  sessionId?: string;
   protected fraudnetSource: string;
 
   constructor(options: FraudnetOptions) {
@@ -44,9 +42,9 @@ export class Fraudnet {
   private loadConfig() {
     const body = this.getBody();
     const config: ConfigScriptProperties = {
-      f: this.sessionId,
+      f: this.sessionId as string,
       s: this.fraudnetSource,
-      b: this.generateBeaconId(this.sessionId),
+      b: this.generateBeaconId(this.sessionId as string),
     };
     if (this.env !== "production") {
       config.sandbox = true;
@@ -71,7 +69,7 @@ export class Fraudnet {
     return body;
   }
 
-  private generateSessionId() {
+  private generateSessionId(): string {
     let i: number, id!: string;
 
     for (i = 0; i < 32; i++) {

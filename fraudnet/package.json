@@ -1,6 +1,7 @@
 {
   "name": "fraudnet",
   "version": "1.0.0",
+  "private": true,
   "description": "Add and remove fraudnet",
   "main": "index.ts",
   "scripts": {
