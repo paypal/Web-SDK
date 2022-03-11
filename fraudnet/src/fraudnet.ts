@@ -25,7 +25,8 @@ export class Fraudnet {
   sessionId?: string;
   protected fraudnetAppName: string;
   protected fraudnetURL: string;
-  private thirdPartyBlock?: HTMLElement;
+  thirdPartyScript?: HTMLScriptElement;
+  configScript?: HTMLScriptElement;
 
   constructor(options: FraudnetOptions) {
     this.env = options.env;
@@ -38,12 +39,28 @@ export class Fraudnet {
   }
 
   loadFraudnet() {
-    this.loadConfig();
-    this.loadFraudnetScript();
+    return this.initialize();
   }
 
   removeFraudnet() {
-    // Todo
+    const ppfniframe = document.querySelector(
+      'iframe[title="ppfniframe"]'
+    ) as HTMLElement;
+    const pbf = document.querySelector('iframe[title="pbf"]') as HTMLElement;
+    const elementsToRemove = [
+      ppfniframe,
+      pbf,
+      this.thirdPartyScript as HTMLScriptElement,
+      this.configScript as HTMLScriptElement,
+    ];
+    elementsToRemove.forEach((element) => {
+      this.removeElementIfOnPage(element);
+    });
+  }
+
+  private initialize() {
+    this.configScript = this.loadConfig();
+    return this.loadFraudnetScript();
   }
 
   private loadConfig() {
@@ -63,14 +80,13 @@ export class Fraudnet {
       "fnparams-dede7cc5-15fd-4c75-a9f4-36c430ee3a99"
     );
     configScript.textContent = JSON.stringify(config);
-    body.appendChild(configScript);
+    const el = body.appendChild(configScript);
+    return el;
   }
 
   private async loadFraudnetScript() {
-    const block = await loadScript({
-      src: this.fraudnetURL,
-    });
-    this.thirdPartyBlock = block;
+    const script = await loadScript({ src: this.fraudnetURL });
+    this.thirdPartyScript = script;
   }
 
   private getBody() {
@@ -104,5 +120,11 @@ export class Fraudnet {
       timestamp +
       "&a=14"
     );
+  }
+
+  private removeElementIfOnPage(element?: HTMLElement) {
+    if (element && element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
   }
 }
