@@ -107,7 +107,7 @@ describe("Fraudnet", () => {
       const pbf = document.createElement("iframe");
       pbf.setAttribute("title", "pbf");
       const configScript = fraudnet.configScript;
-      const fraudnetScript = fraudnet.thirdPartyScript;
+      const fraudnetScript = fraudnet.fraudnetScript;
 
       document.body.appendChild(configScript as HTMLScriptElement);
       document.body.appendChild(fraudnetScript as HTMLScriptElement);

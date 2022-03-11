@@ -25,7 +25,7 @@ export class Fraudnet {
   sessionId?: string;
   protected fraudnetAppName: string;
   protected fraudnetURL: string;
-  thirdPartyScript?: HTMLScriptElement;
+  fraudnetScript?: HTMLScriptElement;
   configScript?: HTMLScriptElement;
 
   constructor(options: FraudnetOptions) {
@@ -50,7 +50,7 @@ export class Fraudnet {
     const elementsToRemove = [
       ppfniframe,
       pbf,
-      this.thirdPartyScript as HTMLScriptElement,
+      this.fraudnetScript as HTMLScriptElement,
       this.configScript as HTMLScriptElement,
     ];
     elementsToRemove.forEach((element) => {
@@ -86,7 +86,7 @@ export class Fraudnet {
 
   private async loadFraudnetScript() {
     const script = await loadScript({ src: this.fraudnetURL });
-    this.thirdPartyScript = script;
+    this.fraudnetScript = script;
   }
 
   private getBody() {
