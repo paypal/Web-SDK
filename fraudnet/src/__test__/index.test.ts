@@ -100,7 +100,6 @@ describe("Fraudnet", () => {
       const fraudnet = createFraudnet(options);
 
       await fraudnet.loadFraudnet();
-      console.log(fraudnet);
 
       const ppfniframe = document.createElement("iframe");
       ppfniframe.setAttribute("title", "ppfniframe");
